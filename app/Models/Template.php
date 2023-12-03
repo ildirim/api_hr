@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Template extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'admin_id',
+        'company_id',
+        'language_id',
+        'job_subcategory_id',
+        'duration',
+        'plan_code',
+        'timing_code',
+        'name',
+        'url',
+    ];
+
+    public function templateCategories(): HasMany
+    {
+        return $this->hasMany(TemplateCategory::class, 'template_id', 'id');
+    }
+
+    public function statuses(): HasMany
+    {
+        return $this->hasMany(TemplateStatus::class, 'template_id', 'id');
+    }
+}
