@@ -20,6 +20,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('profile', 'profile');
     Route::post('login', 'login');
     Route::post('register', 'register');
+    Route::post('confirm-password/{id}', 'confirmPassword');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
 });

@@ -34,7 +34,6 @@ class Handler extends ExceptionHandler
         if ($e instanceof NotFoundException) {
             return $e->render();
         }
-        return parent::render($request, $e);
         return response()->json($this->responseData(Response::HTTP_BAD_REQUEST, 'error', $e->getMessage()), Response::HTTP_BAD_REQUEST);
     }
 

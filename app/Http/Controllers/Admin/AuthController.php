@@ -3,7 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\DTOs\Admin\Auth\Request\ConfirmPasswordRequestDto;
+use App\Http\DTOs\Admin\Auth\Request\PasswordRequestDto;
+use App\Http\DTOs\Admin\Auth\Request\RegisterRequestDto;
+use App\Http\Enums\AdminStatusEnum;
+use App\Http\Requests\Admin\ConfirmPasswordRequest;
 use App\Http\Requests\Admin\LoginRequest;
+use App\Http\Requests\Admin\PasswordRequest;
+use App\Http\Requests\Admin\RegisterRequest;
 use App\Http\Services\Admin\AuthService;
 use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +24,7 @@ class AuthController extends Controller
 {
     public function __construct(private readonly AuthService $authService)
     {
-        $this->middleware('auth:admin', ['except' => ['login','register']]);
+        $this->middleware('auth:admin', ['except' => ['login', 'register', 'confirmPassword']]);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -30,41 +37,56 @@ class AuthController extends Controller
 //            $token = Auth::claims($payload)->attempt($credentials);;
             $token = Auth::attempt($credentials);;
             if (!$token) {
-                return $this->error(Response::HTTP_FORBIDDEN, ['error' => 'Email və ya şifrə yanlışdır']);
+                return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('email_and_password_are_wrong')]);
             }
 
-            $user = Auth::user();
-            $user->token = $token;
-            return $this->success(Response::HTTP_OK, $user);
+            $response = [
+                'token' => $token
+            ];
+            return $this->success(Response::HTTP_OK, $response);
         } catch (\Exception $e) {
             return $this->error(Response::HTTP_BAD_REQUEST, ['error' => $e->getMessage()]);
         }
     }
 
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:admins',
-            'password' => 'required|string|min:6',
-        ]);
+        $requestDto = RegisterRequestDto::fromRequest($request);
+        $admin = Admin::create($requestDto->toArray());
 
-        $user = Admin::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $token = Auth::login($user);
         return response()->json([
             'status' => 'success',
-            'message' => 'Admin created successfully',
-            'user' => $user,
-            'authorisation' => [
+            'message' => __('new_user'),
+            'user' => $admin,
+        ]);
+    }
+
+    public function confirmPassword(int $id, ConfirmPasswordRequest $request): JsonResponse
+    {
+        $requestDto = ConfirmPasswordRequestDto::fromRequest($request);
+        $admin = Admin::find($id);
+        if (!$admin) {
+            return $this->error(Response::HTTP_BAD_REQUEST, ['error' => __('user_not_found')]);
+        }
+        if ($admin->status != AdminStatusEnum::PENDING->value) {
+            return $this->error(Response::HTTP_BAD_REQUEST, ['error' => __('user_already_exist')]);
+        }
+        $admin->update($requestDto->toArray());
+
+        $token = Auth::login($admin);
+        return response()->json([
+            'status' => 'success',
+            'message' => __('new_user'),
+            'data' => [
                 'token' => $token,
-                'type' => 'bearer',
             ]
         ]);
+    }
+
+    public function updatePassword(int $id, PasswordRequest $request)
+    {
+        $passwordRequestDto = PasswordRequestDto::fromRequest($request);
+        $password = $this->enumTypeService->update($id, $passwordRequestDto);
     }
 
     public function logout(): JsonResponse
