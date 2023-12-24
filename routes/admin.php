@@ -2,11 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\PasswordResetController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\EnumTypeController;
 use App\Http\Controllers\Admin\EnumDataController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\JobCategoryController;
 use App\Http\Controllers\Admin\JobSubcategoryController;
@@ -16,14 +18,24 @@ use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\AnswerController;
 use App\Http\Controllers\Admin\TemplateController;
 
-Route::controller(AuthController::class)->group(function () {
-    Route::get('profile', 'profile');
-    Route::post('login', 'login');
-    Route::post('register', 'register');
-    Route::post('confirm-password/{id}', 'confirmPassword');
-    Route::post('logout', 'logout');
-    Route::post('refresh', 'refresh');
+Route::controller(AuthController::class)
+    ->group(function () {
+        Route::get('profile', 'profile');
+        Route::post('login', 'login');
+        Route::get('login/google', 'loginWithGoogle');
+        Route::post('register', 'register');
+        Route::post('confirm-password/{id}', 'confirmPassword');
+        Route::post('logout', 'logout');
+        Route::post('refresh', 'refresh');
 });
+
+Route::controller(PasswordResetController::class)
+    ->group(function () {
+        Route::post('forgot-password', 'forgotPassword');
+        Route::post('validate/token', 'validateToken');
+        Route::post('validate/otp-code', 'validateOtpCode');
+        Route::post('reset-password', 'reset');
+    });
 
 Route::group(['middleware' => ['auth:admin']], function () {
     //    admins
@@ -79,6 +91,13 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::post('/store', 'store');
             Route::put('/update/{id}', 'update');
             Route::delete('/delete/{id}', 'destroy');
+        });
+
+    //    permissions
+    Route::controller(PermissionController::class)
+        ->prefix('permissions')
+        ->group(function () {
+            Route::get('', 'permissions');
         });
 
     //    companies

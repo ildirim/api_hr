@@ -172,6 +172,7 @@ return [
 
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
+        App\Providers\PasswordResetServiceProvider::class,
         App\Providers\CompanyServiceProvider::class,
         App\Providers\AdminServiceProvider::class,
         App\Providers\LanguageServiceProvider::class,

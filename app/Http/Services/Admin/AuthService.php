@@ -12,7 +12,6 @@ class AuthService implements AuthServiceInterface
     {
         try {
             $token = JWTAuth::getToken();
-            dd(Auth::user());
             return JWTAuth::getPayload($token)->toArray();
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
             return response()->json(['token_expired'], 500);

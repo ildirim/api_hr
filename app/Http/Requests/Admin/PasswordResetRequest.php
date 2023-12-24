@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
 
-class ConfirmPasswordRequest extends BaseRequest
+class PasswordResetRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,7 @@ class ConfirmPasswordRequest extends BaseRequest
         return [
             'password' => 'required|required_with:confirmPassword|string|min:3|max:100',
             'confirmPassword' => 'required|string|min:3|max:100',
+            'token' => 'required|string',
         ];
     }
 
@@ -32,6 +33,7 @@ class ConfirmPasswordRequest extends BaseRequest
         return [
             'password' => 'trim',
             'confirmPassword' => 'trim',
+            "token" => "trim",
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
 
-class ConfirmPasswordRequest extends BaseRequest
+class ValidateOtpCodeRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,16 @@ class ConfirmPasswordRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'password' => 'required|required_with:confirmPassword|string|min:3|max:100',
-            'confirmPassword' => 'required|string|min:3|max:100',
+            'otpCode' => 'required|string',
+            'token' => 'required|string',
         ];
     }
 
     public function filters(): array
     {
         return [
-            'password' => 'trim',
-            'confirmPassword' => 'trim',
+            'otpCode' => 'trim',
+            'token' => 'trim',
         ];
     }
 }

@@ -34,7 +34,12 @@ class Handler extends ExceptionHandler
         if ($e instanceof NotFoundException) {
             return $e->render();
         }
-        return response()->json($this->responseData(Response::HTTP_BAD_REQUEST, 'error', $e->getMessage()), Response::HTTP_BAD_REQUEST);
+        dd($e);
+        return response()->json($this->responseData(
+            Response::HTTP_BAD_REQUEST,
+            'error', $e->getMessage()),
+            Response::HTTP_BAD_REQUEST
+        );
     }
 
     private function responseData(int $code = Response::HTTP_OK, ?string $message = null, $data = []): array
