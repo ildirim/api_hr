@@ -2,9 +2,9 @@
 
 namespace App\Interfaces\Admin\Permission;
 
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Collection;
 
 interface PermissionRepositoryInterface
 {
-    public function permissions(): Permission;
+    public function permissions(): Collection;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Admin;
 
+use App\Http\DTOs\Admin\Permission\Response\PermissionResponseDto;
 use App\Interfaces\Admin\Permission\PermissionRepositoryInterface;
 use App\Interfaces\Admin\Permission\PermissionServiceInterface;
 use Spatie\LaravelData\DataCollection;

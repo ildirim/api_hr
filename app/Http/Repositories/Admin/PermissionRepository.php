@@ -14,6 +14,7 @@ class PermissionRepository implements PermissionRepositoryInterface
 
     public function permissions(): Collection
     {
-        return $this->permission->get();
+        return $this->permission->orderBy('name', 'asc')
+                ->get();
     }
 }

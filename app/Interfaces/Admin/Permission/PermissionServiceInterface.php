@@ -2,9 +2,9 @@
 
 namespace App\Interfaces\Admin\Permission;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Spatie\LaravelData\DataCollection;
 
 interface PermissionServiceInterface
 {
-    public function permissions(): JsonResource;
+    public function permissions(): DataCollection;
 }

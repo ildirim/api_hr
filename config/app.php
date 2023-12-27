@@ -179,6 +179,7 @@ return [
         App\Providers\EnumTypeServiceProvider::class,
         App\Providers\EnumDataServiceProvider::class,
         App\Providers\RoleServiceProvider::class,
+        App\Providers\PermissionServiceProvider::class,
         App\Providers\JobCategoryProvider::class,
         App\Providers\JobSubcategoryProvider::class,
         App\Providers\QuestionCategoryServiceProvider::class,
