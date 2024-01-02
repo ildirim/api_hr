@@ -2,17 +2,19 @@
 
 namespace App\Interfaces\Admin\Role;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\DTOs\Admin\Role\Request\RoleRequestDto;
+use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Role;
 
 interface RoleRepositoryInterface
 {
-    public function roles(): JsonResource;
+    public function roles(): Collection;
 
-    public function roleById(int $id): JsonResource;
+    public function roleById(int $id): Role;
 
-    public function store(string $name): JsonResource;
+    public function store(RoleRequestDto $dto): Role;
 
-    public function update(int $id, string $name): JsonResource;
+    public function update(int $id, int $adminId, string $name): Role;
 
-    public function destroy(int $id): JsonResource;
+    public function destroy(int $id): Role;
 }

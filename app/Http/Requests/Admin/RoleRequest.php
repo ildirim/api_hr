@@ -27,7 +27,7 @@ class RoleRequest extends BaseRequest
     public function store(): array
     {
         return [
-            'name' => 'required|unique:roles,name',
+            'name' => 'required',
             'permissions' => 'array'
         ];
     }
@@ -35,7 +35,7 @@ class RoleRequest extends BaseRequest
     public function update(): array
     {
         return [
-            'name' => 'required|unique:roles,name,'.$this->id,
+            'name' => 'required',
             'permissions' => 'array'
         ];
     }

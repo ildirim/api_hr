@@ -2,18 +2,19 @@
 
 namespace App\Interfaces\Admin\Role;
 
-use App\Http\Requests\Admin\RoleRequest;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\DTOs\Admin\Role\Request\RoleRequestDto;
+use App\Http\DTOs\Admin\Role\Response\RoleResponseDto;
+use Spatie\LaravelData\DataCollection;
 
 interface RoleServiceInterface
 {
-    public function roles(): JsonResource;
+    public function roles(): DataCollection;
 
-    public function roleById(int $id): JsonResource;
+    public function roleById(int $id): RoleResponseDto;
 
-    public function store(RoleRequest $request): JsonResource;
+    public function store(RoleRequestDto $dto): RoleResponseDto;
 
-    public function update(int $id, RoleRequest $request): JsonResource;
+    public function update(int $id, RoleRequestDto $dto): RoleResponseDto;
 
-    public function destroy(int $id): JsonResource;
+    public function destroy(int $id): RoleResponseDto;
 }

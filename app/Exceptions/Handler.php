@@ -33,6 +33,8 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof NotFoundException) {
             return $e->render();
+        } elseif ($e instanceof BadRequestException) {
+            return $e->render();
         }
         dd($e);
         return response()->json($this->responseData(

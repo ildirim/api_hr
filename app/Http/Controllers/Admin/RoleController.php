@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\DTOs\Admin\Role\Request\RoleRequestDto;
 use App\Http\Requests\Admin\RoleRequest;
 use App\Interfaces\Admin\Role\RoleServiceInterface;
 use Illuminate\Http\JsonResponse;
@@ -28,13 +29,21 @@ class RoleController extends Controller
 
     public function store(RoleRequest $request): JsonResponse
     {
-        $role = $this->roleService->store($request);
+        $roleRequestDto = RoleRequestDto::fromRequest($request);
+        $role = $this->roleService->store($roleRequestDto);
         return $this->success(Response::HTTP_OK, $role);
     }
 
     public function update(int $id, RoleRequest $request): JsonResponse
     {
-        $result = $this->roleService->update($id, $request);
+        $roleRequestDto = RoleRequestDto::fromRequest($request);
+        $result = $this->roleService->update($id, $roleRequestDto);
+        return $this->success(Response::HTTP_OK, $result);
+    }
+
+    public function updateStatus(int $id): JsonResponse
+    {
+        $result = $this->roleService->updateStatus($id);
         return $this->success(Response::HTTP_OK, $result);
     }
 

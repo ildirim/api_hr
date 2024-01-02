@@ -3,9 +3,9 @@
 namespace App\Http\Repositories\Admin;
 
 use App\Exceptions\NotFoundException;
-use App\Http\Resources\Admin\RoleResource;
+use App\Http\DTOs\Admin\Role\Request\RoleRequestDto;
 use App\Interfaces\Admin\Role\RoleRepositoryInterface;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
 
 class RoleRepository implements RoleRepositoryInterface
@@ -14,50 +14,63 @@ class RoleRepository implements RoleRepositoryInterface
     {
     }
 
-    public function roles(): JsonResource
+    public function roles(): Collection
     {
-        return RoleResource::collection($this->role->with('permissions:id,name')->get());
+        return $this->role->with('permissions:id,name')
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
-    public function roleById(int $id): JsonResource
+    public function roleById(int $id): Role
     {
         $role = $this->role->with('permissions:id,name')->find($id);
         if (!$role) {
             throw new NotFoundException('Rol tapılmadı');
         }
-        return new RoleResource($role);
+        return $role;
     }
 
-    public function store(string $name): JsonResource
+    public function roleByAdminIdAndName(int $adminId, string $name): ?Role
     {
-        $requestData = [
-            'name' => $name
-        ];
-
-        return new RoleResource($this->role->create($requestData));
+        return $this->role->select('id')
+            ->where('admin_id', $adminId)
+            ->where('name', $name)
+            ->first();
     }
 
-    public function update(int $id, string $name): JsonResource
+    public function store(RoleRequestDto $dto): Role
     {
-        $role = $this->role->find($id);
+        return $this->role->create($dto->toArray());
+    }
+
+    public function update(int $id, int $adminId, string $name): Role
+    {
+        $role = $this->role->where('id', $id)
+            ->where('admin_id', $adminId)
+            ->first();
         if (!$role) {
             throw new NotFoundException('Rol tapılmadı');
         }
 
         $requestData = ['name' => $name];
         $role->update($requestData);
-
-        return new RoleResource($role);
+        return $role;
     }
 
-    public function destroy(int $id): JsonResource
+    public function updateStatus(Role $role, int $status): Role
+    {
+        $requestData = ['status' => $status];
+        $role->update($requestData);
+        return $role;
+    }
+
+    public function destroy(int $id): Role
     {
         $role = $this->role->find($id);
         if (!$role) {
             throw new NotFoundException('Rol tapılmadı');
         }
         $role->delete();
-
-        return new RoleResource($role);
+        return $role;
     }
 }

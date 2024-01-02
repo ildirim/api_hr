@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\DTOs\Admin\Auth\Request\ConfirmPasswordRequestDto;
 use App\Http\DTOs\Admin\Auth\Request\PasswordRequestDto;
 use App\Http\DTOs\Admin\Auth\Request\RegisterRequestDto;
+use App\Http\Enums\ActivationStatusEnum;
 use App\Http\Enums\AdminStatusEnum;
 use App\Http\Requests\Admin\ConfirmPasswordRequest;
 use App\Http\Requests\Admin\LoginRequest;
@@ -17,11 +18,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\DB;
 class AuthController extends Controller
 {
     public function __construct(private readonly AuthService $authService)
@@ -33,15 +35,16 @@ class AuthController extends Controller
     {
         try {
             $credentials = $request->only('email', 'password');
-            $token = Auth::guard('admin')->attempt($credentials);
+            $token = auth('admin')->attempt($credentials);
             if (!$token) {
                 return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('email_and_password_are_wrong')]);
             }
-            $user = Admin::find(auth()->guard('admin')->user()->id);
-            if ($user->status == AdminStatusEnum::DEACTIVE->value) {
+            $admin = Admin::find(auth('admin')->user()->id);
+            $role = $admin->role;
+            if ($admin->status == AdminStatusEnum::DEACTIVE->value || $role?->status == ActivationStatusEnum::DEACTIVE->value) {
                 return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('account_is_not_active')]);
             }
-            $token = $this->payloadToToken($user, $credentials);
+            $token = $this->payloadToToken($admin, $credentials, $role);
             $response = [
                 'token' => $token
             ];
@@ -73,7 +76,11 @@ class AuthController extends Controller
         return $admin;
     }
 
-    public function payloadToToken(Admin $admin, array $credentials): string
+    public function payloadToToken(
+        Admin $admin,
+        array $credentials,
+        ?Role $role
+    ): string
     {
         $payload = [
             'firstName' => $admin->first_name,
@@ -82,6 +89,8 @@ class AuthController extends Controller
             'phone' => $admin->phone,
             'profileImage' => $admin->profile_image,
             'status' => $admin->status,
+            'role' => $role->name,
+            'permissions' => $role->permissions->pluck('name')
         ];
 
         return JWTAuth::claims($payload)->attempt($credentials);
@@ -111,7 +120,7 @@ class AuthController extends Controller
         }
         $admin->update($requestDto->toArray());
 
-        $token = Auth::guard('admin')->login($admin);
+        $token = auth('admin')->login($admin);
         return response()->json([
             'status' => 'success',
             'message' => __('new_user'),
@@ -124,12 +133,12 @@ class AuthController extends Controller
     public function updatePassword(int $id, PasswordRequest $request)
     {
         $passwordRequestDto = PasswordRequestDto::fromRequest($request);
-        $password = $this->enumTypeService->update($id, $passwordRequestDto);
+        $password = $this->authService->update($id, $passwordRequestDto);
     }
 
     public function logout(): JsonResponse
     {
-        Auth::guard('admin')->logout();
+        auth('admin')->logout();
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
@@ -140,9 +149,9 @@ class AuthController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'user' => Auth::guard('admin')->user(),
+            'user' => auth('admin')->user(),
             'authorization' => [
-                'token' => Auth::guard('admin')->refresh(),
+                'token' => auth('admin')->refresh(),
                 'type' => 'bearer',
             ]
         ]);

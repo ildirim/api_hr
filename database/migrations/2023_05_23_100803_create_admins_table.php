@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('role_id');
             $table->integer('created_admin_id')->default(0);
             $table->string('first_name');
             $table->string('last_name');
@@ -21,9 +22,11 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('phone')->nullable();
             $table->string('profile_image')->nullable();
-            $table->smallInteger('status')->default(1);
+            $table->smallInteger('status')->default(2001);
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('role_id')->references('id')->on('roles');
         });
     }
 

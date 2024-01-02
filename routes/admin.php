@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\TemplateController;
 
 Route::controller(AuthController::class)
     ->group(function () {
-        Route::get('profile', 'profile');
+        Route::get('profile', 'profile')->middleware(['auth:admin', 'permission']);
         Route::post('login', 'login');
         Route::get('login/google', 'loginWithGoogle');
         Route::post('register', 'register');
@@ -90,6 +90,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/{id}', 'roleById');
             Route::post('/store', 'store');
             Route::put('/update/{id}', 'update');
+            Route::put('/update-status/{id}', 'updateStatus');
             Route::delete('/delete/{id}', 'destroy');
         });
 

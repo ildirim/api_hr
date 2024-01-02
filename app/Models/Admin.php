@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Models\Role;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Admin extends Authenticatable implements JWTSubject
 {
@@ -32,6 +35,7 @@ class Admin extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
+        'role_id',
         'created_admin_id',
         'company_id',
         'first_name',
@@ -75,5 +79,21 @@ class Admin extends Authenticatable implements JWTSubject
     public function companies(): HasMany
     {
         return $this->hasMany(Company::class, 'admin_id', 'id');
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class, 'admin_id', 'id');
+    }
+
+    public static function me(): array
+    {
+        $token = JWTAuth::getToken();
+        return JWTAuth::getPayload($token)->toArray();
     }
 }

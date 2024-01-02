@@ -22,6 +22,7 @@ class RegisterRequest extends BaseRequest
     public function rules(): array
     {
         return [
+            'roleId' => 'required|integer|digits_between:1,11|exists:roles,id',
             'firstName' => 'required|string|min:3|max:100',
             'lastName' => 'required|string|min:3|max:100',
             'email' => 'required|string|email|min:3|max:100|unique:admins,email',
@@ -29,18 +30,19 @@ class RegisterRequest extends BaseRequest
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-            "email.required" => "Email daxil edin",
-            "email.email" => "Email formatı düzgün deyil",
-            "password.required" => "Şifrə daxil edin",
-        ];
-    }
+//    public function messages(): array
+//    {
+//        return [
+//            "email.required" => "Email daxil edin",
+//            "email.email" => "Email formatı düzgün deyil",
+//            "password.required" => "Şifrə daxil edin",
+//        ];
+//    }
 
     public function filters(): array
     {
         return [
+            'roleId' => 'trim',
             'firstName' => 'trim',
             'lastName' => 'trim',
             "email" => "trim",
