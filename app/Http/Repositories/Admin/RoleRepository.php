@@ -14,16 +14,22 @@ class RoleRepository implements RoleRepositoryInterface
     {
     }
 
-    public function roles(): Collection
+    public function roles(int $adminId): Collection
     {
-        return $this->role->with('permissions:id,name')
-            ->orderBy('id', 'desc')
+        return $this->role->select('r.*', 'a.first_name', 'a.last_name')
+            ->from('roles as r')
+            ->leftJoin('admins as a', 'r.admin_id', 'a.id')
+            ->where('r.admin_id', $adminId)
+            ->orderBy('r.id', 'desc')
             ->get();
     }
 
-    public function roleById(int $id): Role
+    public function roleById(int $id, int $adminId): Role
     {
-        $role = $this->role->with('permissions:id,name')->find($id);
+        $role = $this->role->with('permissions:id,name')
+            ->where('admin_id', $adminId)
+            ->where('id', $id)
+            ->first();
         if (!$role) {
             throw new NotFoundException('Rol tapılmadı');
         }
@@ -66,6 +72,7 @@ class RoleRepository implements RoleRepositoryInterface
 
     public function destroy(int $id): Role
     {
+        // delete if not assigned to anyone
         $role = $this->role->find($id);
         if (!$role) {
             throw new NotFoundException('Rol tapılmadı');

@@ -8,9 +8,9 @@ use Spatie\Permission\Models\Role;
 
 interface RoleRepositoryInterface
 {
-    public function roles(): Collection;
+    public function roles(int $adminId): Collection;
 
-    public function roleById(int $id): Role;
+    public function roleById(int $id, int $adminId): Role;
 
     public function store(RoleRequestDto $dto): Role;
 

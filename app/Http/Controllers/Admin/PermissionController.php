@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PermissionController extends Controller
 {
-    public function __construct(protected PermissionServiceInterface $roleService)
+    public function __construct(protected PermissionServiceInterface $permissionService)
     {
     }
 
     public function permissions(): JsonResponse
     {
-        $permissions = $this->roleService->permissions();
+        $permissions = $this->permissionService->groupedPermissions();
         return $this->success(Response::HTTP_OK, $permissions);
     }
 }

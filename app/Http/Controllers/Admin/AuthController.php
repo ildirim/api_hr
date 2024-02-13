@@ -40,11 +40,10 @@ class AuthController extends Controller
                 return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('email_and_password_are_wrong')]);
             }
             $admin = Admin::find(auth('admin')->user()->id);
-            $role = $admin->role;
-            if ($admin->status == AdminStatusEnum::DEACTIVE->value || $role?->status == ActivationStatusEnum::DEACTIVE->value) {
+            if ($admin->status == AdminStatusEnum::DEACTIVE->value) {
                 return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('account_is_not_active')]);
             }
-            $token = $this->payloadToToken($admin, $credentials, $role);
+            $token = $this->payloadToToken($admin, $credentials);
             $response = [
                 'token' => $token
             ];
@@ -79,9 +78,14 @@ class AuthController extends Controller
     public function payloadToToken(
         Admin $admin,
         array $credentials,
-        ?Role $role
     ): string
     {
+        $permissionNames = [];
+        $roleNames = [];
+        foreach ($admin->roles as $role)  {
+            $roleNames[] = $role->name;
+            $permissionNames = array_merge($permissionNames, $role->permissions->pluck('name')->toArray());
+        }
         $payload = [
             'firstName' => $admin->first_name,
             'last_name' => $admin->lastName,
@@ -89,8 +93,8 @@ class AuthController extends Controller
             'phone' => $admin->phone,
             'profileImage' => $admin->profile_image,
             'status' => $admin->status,
-            'role' => $role->name,
-            'permissions' => $role->permissions->pluck('name')
+            'role' => $roleNames,
+            'permissions' => $permissionNames
         ];
 
         return JWTAuth::claims($payload)->attempt($credentials);
@@ -101,11 +105,7 @@ class AuthController extends Controller
         $requestDto = RegisterRequestDto::fromRequest($request);
         $admin = Admin::create($requestDto->toArray());
 
-        return response()->json([
-            'status' => 'success',
-            'message' => __('new_user'),
-            'user' => $admin,
-        ]);
+        return $this->success(Response::HTTP_OK, ['admin' => $admin]);
     }
 
     public function confirmPassword(int $id, ConfirmPasswordRequest $request): JsonResponse
@@ -121,13 +121,7 @@ class AuthController extends Controller
         $admin->update($requestDto->toArray());
 
         $token = auth('admin')->login($admin);
-        return response()->json([
-            'status' => 'success',
-            'message' => __('new_user'),
-            'data' => [
-                'token' => $token,
-            ]
-        ]);
+        return $this->success(Response::HTTP_OK, ['token' => $token]);
     }
 
     public function updatePassword(int $id, PasswordRequest $request)

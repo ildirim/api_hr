@@ -21,8 +21,8 @@ class ConfirmPasswordRequestDto extends Data
     public static function fromRequest(ConfirmPasswordRequest $request): static
     {
         return new self(
-            $request->input('password'),
-            $request->input('confirmPassword'),
+            bcrypt($request->input('password')),
+            bcrypt($request->input('confirmPassword')),
             AdminStatusEnum::ACTIVE->value
         );
     }

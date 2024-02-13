@@ -24,7 +24,7 @@ class RegisterRequestDto extends Data
     public static function fromRequest(RegisterRequest $request): static
     {
         return new self(
-            $request->input('roleId'),
+            $request->input('roleId') ?? 1,
             $request->input('firstName'),
             $request->input('lastName'),
             $request->input('email'),

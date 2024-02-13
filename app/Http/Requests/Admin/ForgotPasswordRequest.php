@@ -22,7 +22,6 @@ class ForgotPasswordRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'adminId' => 'required|integer|exists:admins,id',
             'phone' => 'string',
             'email' => 'string',
         ];

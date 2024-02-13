@@ -28,7 +28,7 @@ class RoleRequest extends BaseRequest
     {
         return [
             'name' => 'required',
-            'permissions' => 'array'
+            'permissions' => 'required|array'
         ];
     }
 

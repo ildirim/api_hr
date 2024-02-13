@@ -33,6 +33,15 @@ class PasswordResetService implements PasswordResetServiceInterface
 
     public function forgotPassword(ForgotPasswordRequestDto $dto): ForgotPasswordResponseDto
     {
+        if ($dto->email) {
+            $admin = Admin::where('email', $dto->email)->first();
+        } else {
+            $admin = Admin::where('phone', $dto->phone)->first();
+        }
+        if (!$admin) {
+            throw new NotFoundException('Admin not found');
+        }
+        $dto->additional(['admin_id' => $admin->id]);
         return ForgotPasswordResponseDto::from($this->passwordResetRepository->forgotPassword($dto));
     }
 

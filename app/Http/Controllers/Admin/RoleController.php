@@ -24,14 +24,14 @@ class RoleController extends Controller
     public function roleById(int $id): JsonResponse
     {
         $role = $this->roleService->roleById($id);
-        return $this->success(Response::HTTP_CREATED, $role);
+        return $this->success(Response::HTTP_OK, $role);
     }
 
     public function store(RoleRequest $request): JsonResponse
     {
         $roleRequestDto = RoleRequestDto::fromRequest($request);
         $role = $this->roleService->store($roleRequestDto);
-        return $this->success(Response::HTTP_OK, $role);
+        return $this->success(Response::HTTP_CREATED, $role);
     }
 
     public function update(int $id, RoleRequest $request): JsonResponse

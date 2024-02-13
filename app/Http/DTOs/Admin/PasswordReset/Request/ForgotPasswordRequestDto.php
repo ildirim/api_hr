@@ -14,7 +14,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class ForgotPasswordRequestDto extends Data
 {
     public function __construct(
-        public int $adminId,
+        public ?int $adminId,
         public ?string $phone,
         public ?string $email,
         public string $token,
@@ -27,14 +27,14 @@ class ForgotPasswordRequestDto extends Data
     public static function fromRequest(ForgotPasswordRequest $request): static
     {
         return new self(
-            $request->input('adminId'),
+            null,
             $request->input('phone'),
             $request->input('email'),
             Str::random(64),
             !is_null($request->input('phone'))
                 ? PasswordResetTypeEnum::PHONE->value
                 : PasswordResetTypeEnum::EMAIL->value,
-            mt_rand(1000000, 9999999),
+            mt_rand(100000, 999999),
             Carbon::now()->addMinutes(3)
         );
     }

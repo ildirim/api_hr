@@ -5,27 +5,45 @@ namespace App\Http\Services\Admin;
 use App\Exceptions\BadRequestException;
 use App\Http\DTOs\Admin\Role\Request\RoleRequestDto;
 use App\Http\DTOs\Admin\Role\Response\RoleResponseDto;
+use App\Http\DTOs\Admin\Role\Response\RoleByIdResponseDto;
 use App\Http\Enums\ActivationStatusEnum;
 use App\Http\Requests\Admin\RoleRequest;
+use App\Interfaces\Admin\Permission\PermissionRepositoryInterface;
 use App\Interfaces\Admin\Role\RoleRepositoryInterface;
+use App\Interfaces\Admin\Permission\PermissionServiceInterface;
 use App\Interfaces\Admin\Role\RoleServiceInterface;
+use App\Helpers\PermissionHelper;
 use Illuminate\Support\Facades\DB;
 use Spatie\LaravelData\DataCollection;
 
 class RoleService implements RoleServiceInterface
 {
-    public function __construct(protected RoleRepositoryInterface $roleRepository)
+    public function __construct(
+        protected RoleRepositoryInterface $roleRepository,
+        protected PermissionRepositoryInterface $permissionRepository,
+    )
     {
     }
 
     public function roles(): DataCollection
     {
-        return RoleResponseDto::collection($this->roleRepository->roles());
+        $adminId = auth()->user()->id;
+        return RoleResponseDto::collection($this->roleRepository->roles($adminId));
     }
 
-    public function roleById(int $id): RoleResponseDto
+    public function roleById(int $id): RoleByIdResponseDto
     {
-        return RoleResponseDto::from($this->roleRepository->roleById($id));
+        $adminId = auth()->user()->id;
+        $role = $this->roleRepository->roleById($id, $adminId);
+        $permissions = $this->permissionRepository->permissions();
+        $rolePermissionIds = $role->permissions->pluck('id')->toArray();
+        $permissions->map(function ($permission) use ($rolePermissionIds) {
+            $permission->isActive = in_array($permission->id, $rolePermissionIds);
+            return $permission;
+        });
+        $groupedPermissions = PermissionHelper::groupPermissionsByRoleName($permissions);
+        $role->groupedPermissions = $groupedPermissions;
+        return RoleByIdResponseDto::from($role);
     }
 
     public function store(RoleRequestDto $dto): RoleResponseDto
