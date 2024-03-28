@@ -9,6 +9,7 @@ class LanguageRequestDto extends Data
 {
     public function __construct(
         public string $name,
+        public string $locale,
     ) {
     }
 
@@ -16,6 +17,7 @@ class LanguageRequestDto extends Data
     {
         return new self(
             $request->input('name'),
+            $request->input('locale'),
         );
     }
 }

@@ -23,6 +23,7 @@ class LanguageRequest extends BaseRequest
     {
         return [
             'name' => 'required|string',
+            'locale' => 'required|string',
         ];
     }
 
@@ -30,6 +31,7 @@ class LanguageRequest extends BaseRequest
     {
         return [
             'name.required' => 'Ad daxil edin',
+            'locale.required' => 'Locale daxil edin',
         ];
     }
 
@@ -37,6 +39,7 @@ class LanguageRequest extends BaseRequest
     {
         return [
             'name' => 'trim',
+            'locale' => 'trim',
         ];
     }
 }

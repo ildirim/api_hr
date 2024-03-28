@@ -94,7 +94,7 @@ class RoleService implements RoleServiceInterface
 
     public function updateStatus(int $id): RoleResponseDto
     {
-        $role = $this->roleRepository->roleById($id);
+        $role = $this->roleRepository->roleById($id, auth('admin')->user()->id);
         $status = $role->status == ActivationStatusEnum::ACTIVE->value
             ? ActivationStatusEnum::DEACTIVE->value
             : ActivationStatusEnum::ACTIVE->value;

@@ -2,18 +2,19 @@
 
 namespace App\Interfaces\Admin\Admin;
 
-use App\Http\Requests\Admin\AdminRequest;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\DTOs\Admin\Admin\Request\AdminRequestDto;
+use App\Models\Admin;
+use Illuminate\Support\Collection;
 
 interface AdminRepositoryInterface
 {
-    public function admins(): JsonResource;
+    public function admins(): Collection;
 
-    public function adminById(int $id): JsonResource;
+    public function adminById(int $id): Admin;
 
-    public function store(AdminRequest $request): JsonResource;
+    public function store(AdminRequestDto $dto): Admin;
 
-    public function update(int $id, AdminRequest $request): JsonResource;
+    public function update(int $id, AdminRequestDto $dto): Admin;
 
-    public function destroy(int $id): JsonResource;
+    public function destroy(int $id): Admin;
 }

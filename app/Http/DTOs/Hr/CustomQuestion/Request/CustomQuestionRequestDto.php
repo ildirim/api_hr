@@ -12,7 +12,7 @@ class CustomQuestionRequestDto extends Data
 {
     public function __construct(
         public int $adminId,
-        public int $templateCategoryId,
+        public int $templateId,
         public int $languageId,
         public string $content,
     ) {

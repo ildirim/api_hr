@@ -2,18 +2,19 @@
 
 namespace App\Interfaces\Admin\Admin;
 
-use App\Http\Requests\Admin\AdminRequest;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\DTOs\Admin\Admin\Request\AdminRequestDto;
+use App\Http\DTOs\Admin\Admin\Response\AdminResponseDto;
+use Spatie\LaravelData\DataCollection;
 
 interface AdminServiceInterface
 {
-    public function admins(): JsonResource;
+    public function admins(): DataCollection;
 
-    public function adminById(int $id): JsonResource;
+    public function adminById(int $id): AdminResponseDto;
 
-    public function store(AdminRequest $request): JsonResource;
+    public function store(AdminRequestDto $dto): AdminResponseDto;
 
-    public function update(int $id, AdminRequest $request): JsonResource;
+    public function update(int $id, AdminRequestDto $request): AdminResponseDto;
 
-    public function destroy(int $id): JsonResource;
+    public function destroy(int $id): AdminResponseDto;
 }

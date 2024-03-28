@@ -11,7 +11,8 @@ class RoleResponseDto extends Data
         public ?int $id,
         public string $name,
         public string $created_by,
-        public string $created_at,
+        public int $status,
+        public ?string $created_at,
     ) {
     }
 
@@ -21,6 +22,7 @@ class RoleResponseDto extends Data
             $role->id,
             $role->name,
             "{$role->first_name} {$role->last_name}",
+            $role->status,
             $role->created_at
         );
     }

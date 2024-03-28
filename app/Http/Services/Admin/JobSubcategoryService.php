@@ -4,6 +4,7 @@ namespace App\Http\Services\Admin;
 
 use App\Http\DTOs\Admin\JobSubcategory\Request\JobSubcategoryRequestDto;
 use App\Http\DTOs\Admin\JobSubcategory\Response\JobSubcategoryResponseDto;
+use App\Http\DTOs\Admin\JobSubcategory\Response\JobSubcategoryByLocaleResponseDto;
 use App\Interfaces\Admin\JobSubcategory\JobSubcategoryRepositoryInterface;
 use App\Interfaces\Admin\JobSubcategory\JobSubcategoryServiceInterface;
 use App\Models\JobCategoryTranslation;
@@ -19,6 +20,13 @@ class JobSubcategoryService implements JobSubcategoryServiceInterface
     public function jobSubcategories(): DataCollection
     {
         return JobSubcategoryResponseDto::collection($this->jobSubcategoryRepository->jobSubcategories());
+    }
+
+    public function jobSubcategoriesByJobCategoryIdAndLocale(int $jobCategoryId, ?string $locale): DataCollection
+    {
+        return JobSubcategoryByLocaleResponseDto::collection(
+            $this->jobSubcategoryRepository->jobSubcategoriesByJobCategoryIdAndLocale($jobCategoryId, $locale)
+        );
     }
 
     public function jobSubcategoryById(int $id): JobSubcategoryResponseDto

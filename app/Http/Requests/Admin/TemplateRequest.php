@@ -31,7 +31,6 @@ class TemplateRequest extends BaseRequest
             'languageId' => 'required|integer|digits_between:1,11|exists:languages,id',
             'planCode' => 'required|integer|digits_between:1,11|exists:enum_datas,code',
             'name' => 'required|string|between:3,100',
-            'companyId' => 'integer|digits_between:1,11|exists:companies,id',
             'timingCode' => 'integer|digits_between:1,11|exists:enum_datas,code',
             'duration' => 'integer|digits_between:1,11',
         ];
@@ -44,7 +43,6 @@ class TemplateRequest extends BaseRequest
             'languageId' => 'required|integer|digits_between:1,11|exists:languages,id',
             'planCode' => 'required|integer|digits_between:1,11|exists:enum_datas,code',
             'name' => 'required|string|between:3,100',
-            'companyId' => 'integer|digits_between:1,11|exists:companies,id',
             'timingCode' => 'integer|digits_between:1,11|exists:enum_datas,code',
             'duration' => 'integer|digits_between:1,11',
         ];

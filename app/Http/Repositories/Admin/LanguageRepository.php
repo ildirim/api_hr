@@ -19,7 +19,7 @@ class LanguageRepository implements LanguageRepositoryInterface
 
     public function languages(): Collection
     {
-        return $this->language->select('id', 'name')->get();
+        return $this->language->select('id', 'name', 'locale')->get();
     }
 
     public function languageById(int $id): Language

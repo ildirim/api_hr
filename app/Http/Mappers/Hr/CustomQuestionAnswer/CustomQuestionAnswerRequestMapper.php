@@ -14,7 +14,7 @@ class CustomQuestionAnswerRequestMapper
         $user = Auth::user();
         $customQuestion = new CustomQuestionRequestDto(
             $user->id,
-            $request['templateCategoryId'],
+            $request['templateId'],
             $request['languageId'],
             $request['content'],
         );

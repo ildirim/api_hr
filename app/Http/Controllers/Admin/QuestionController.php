@@ -28,7 +28,6 @@ class QuestionController extends Controller
         $questionMixedRequestDto = QuestionMixedRequestDto::fromRequest($request);
         $questionCategories = $this->questionService->questionsForSimpleTemplate($questionMixedRequestDto);
         return $this->success(Response::HTTP_OK, $questionCategories);
-
     }
 
     public function questionById(int $id): JsonResponse
@@ -51,7 +50,6 @@ class QuestionController extends Controller
         $requestDto = QuestionRequestMapper::requestToDto($requestData);
         $result = $this->questionService->update($id, $requestDto);
         return $this->success(Response::HTTP_OK, $result);
-
     }
 
     public function destroy($id): JsonResponse

@@ -27,27 +27,23 @@ class AdminRequest extends BaseRequest
     public function store(): array
     {
         return [
-            'created_admin_id' => 'required|integer|exists:admins,id',
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
             'email' => 'required|string|email|unique:admins,email',
-            'password' => 'required|string|min:4',
-            'phone' => '',
-            'profile_image' => '',
+            'phone' => 'required|string|unique:admins,phone',
+            'profileImage' => '',
             'status' => '',
-            'roles' => 'array'
+            'roles' => 'required|array'
         ];
     }
 
     public function update(): array
     {
         return [
-            'created_admin_id' => 'required|integer|exists:admins,id',
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|string|email|unique:admins,email,' . $this->id,
-            'password' => '',
-            'phone' => '',
+            'phone' => 'required|string|unique:admins,phone' . $this->id,
             'profile_image' => '',
             'status' => '',
             'roles' => 'array'

@@ -15,6 +15,12 @@ class TemplateController extends Controller
     {
     }
 
+    public function getTemplatesByCompanyId(): JsonResponse
+    {
+        $templates = $this->templateService->getTemplatesByCompanyId(auth('admin')->user()->company_id);
+        return $this->success(Response::HTTP_OK, $templates);
+    }
+
     public function store(TemplateRequest $request): JsonResponse
     {
         $templateRequestDto = TemplateRequestDto::fromRequest($request);

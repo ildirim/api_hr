@@ -81,6 +81,11 @@ class Admin extends Authenticatable implements JWTSubject
         return $this->hasMany(Company::class, 'admin_id', 'id');
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');

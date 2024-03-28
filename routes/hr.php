@@ -1,12 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Hr\JobCategoryController;
 use App\Http\Controllers\Hr\QuestionController;
 use App\Http\Controllers\Hr\CustomQuestionAnswerController;
 use App\Http\Controllers\Hr\CustomQuestionController;
+use App\Http\Controllers\Hr\TemplateController;
 use App\Http\Controllers\Hr\TemplateCategoryController;
 
 Route::group(['middleware' => ['auth:admin']], function () {
+    // job-categories
+    Route::controller(JobCategoryController::class)
+        ->prefix('job-categories')
+        ->group(function () {
+            Route::get('', 'jobCategories');
+        });
+
     // questions
     Route::controller(QuestionController::class)
         ->prefix('questions')
@@ -28,6 +37,13 @@ Route::group(['middleware' => ['auth:admin']], function () {
         ->group(function () {
             Route::get('/{templateCategoryId}/template-category', 'customQuestionsByTemplateCategoryId');
             Route::get('/{id}', 'customQuestionById');
+        });
+
+    // templates
+    Route::controller(TemplateController::class)
+        ->prefix('templates')
+        ->group(function () {
+            Route::get('/{id}', 'templateById');
         });
 
     // template category

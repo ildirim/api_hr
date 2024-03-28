@@ -17,7 +17,9 @@ use App\Http\Controllers\Admin\QuestionAnswerController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\AnswerController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\TestController;
 
+Route::get('/test', [TestController::class, 'index']);
 Route::controller(AuthController::class)
     ->group(function () {
         Route::get('profile', 'profile')->middleware(['auth:admin', 'permission']);
@@ -116,7 +118,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(JobCategoryController::class)
         ->prefix('job-categories')
         ->group(function () {
-            Route::get('', 'jobCategories');
+            Route::get('', 'jobCategoriesByLocale');
             Route::get('/{id}', 'jobCategoryById');
             Route::post('/store', 'store');
             Route::put('/update/{id}', 'update');
@@ -124,6 +126,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         });
 
     //    job subcategories
+    Route::get('job-categories/{jobCategoryId}/job-subcategories', [JobSubCategoryController::class, 'jobSubcategoriesByJobCategoryIdAndLocale']);
     Route::controller(JobSubCategoryController::class)
         ->prefix('job-subcategories')
         ->group(function () {
@@ -179,6 +182,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(TemplateController::class)
         ->prefix('templates')
         ->group(function () {
+            Route::get('', 'getTemplatesByCompanyId');
+            Route::get('/{id}', 'templateById');
             Route::post('/store', 'store');
         });
 });

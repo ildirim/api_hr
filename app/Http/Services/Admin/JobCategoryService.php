@@ -4,6 +4,7 @@ namespace App\Http\Services\Admin;
 
 use App\Http\DTOs\Admin\JobCategory\Request\JobCategoryRequestDto;
 use App\Http\DTOs\Admin\JobCategory\Response\JobCategoryResponseDto;
+use App\Http\DTOs\Admin\JobCategory\Response\JobCategoryByLocaleResponseDto;
 use App\Interfaces\Admin\JobCategory\JobCategoryRepositoryInterface;
 use App\Interfaces\Admin\JobCategory\JobCategoryServiceInterface;
 use App\Models\JobCategory;
@@ -19,6 +20,11 @@ class JobCategoryService implements JobCategoryServiceInterface
     public function jobCategories(): DataCollection
     {
         return JobCategoryResponseDto::collection($this->jobCategoryRepository->jobCategories());
+    }
+
+    public function jobCategoriesByLocale(?string $locale): DataCollection
+    {
+        return JobCategoryByLocaleResponseDto::collection($this->jobCategoryRepository->jobCategoriesByLocale($locale));
     }
 
     public function jobCategoryById(int $id): JobCategoryResponseDto

@@ -25,6 +25,7 @@ class QuestionMixedRequest extends BaseRequest
         return [
             'jobSubcategoryId' => 'required',
             'languageId' => 'required',
+            'companyId' => 'required',
         ];
     }
 
@@ -33,6 +34,7 @@ class QuestionMixedRequest extends BaseRequest
         return [
             'jobSubcategoryId.required' => 'İş kateqoriyası daxil edin',
             'languageId.required' => 'Dil daxil edin',
+            'companyId.required' => 'Dil daxil edin',
         ];
     }
 
@@ -41,6 +43,7 @@ class QuestionMixedRequest extends BaseRequest
         return [
             'jobSubcategoryId' => 'trim',
             'languageId' => 'trim',
+            'companyId' => 'trim',
         ];
     }
 }

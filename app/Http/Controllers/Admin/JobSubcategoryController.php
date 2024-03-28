@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\DTOs\Admin\JobSubcategory\Request\JobSubcategoryRequestDto;
 use App\Http\Requests\Admin\JobSubcategoryRequest;
 use App\Interfaces\Admin\JobSubcategory\JobSubcategoryServiceInterface;
@@ -18,6 +19,12 @@ class JobSubcategoryController extends Controller
     public function jobSubcategories(): JsonResponse
     {
         $jobSubcategories = $this->jobSubcategoryService->jobSubcategories();
+        return $this->success(Response::HTTP_OK, $jobSubcategories);
+    }
+
+    public function jobSubcategoriesByJobCategoryIdAndLocale(int $jobCategoryId, Request $request): JsonResponse
+    {
+        $jobSubcategories = $this->jobSubcategoryService->jobSubcategoriesByJobCategoryIdAndLocale($jobCategoryId, $request->header('lang'));
         return $this->success(Response::HTTP_OK, $jobSubcategories);
     }
 

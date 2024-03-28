@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('custom_questions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('admin_id');
-            $table->unsignedBigInteger('template_category_id');
+            $table->unsignedBigInteger('template_id');
             $table->unsignedBigInteger('language_id');
             $table->string('content', 2000);
             $table->timestamps();
 
-            $table->foreign('template_category_id')->references('id')->on('template_categories');
+            $table->foreign('template_id')->references('id')->on('templates');
             $table->foreign('admin_id')->references('id')->on('admins');
             $table->foreign('language_id')->references('id')->on('languages');
         });

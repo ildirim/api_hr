@@ -13,7 +13,7 @@ class CustomQuestion extends Model
 
     protected $fillable = [
         'admin_id',
-        'template_category_id',
+        'template_id',
         'language_id',
         'content',
     ];

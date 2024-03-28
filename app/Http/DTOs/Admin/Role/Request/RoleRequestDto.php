@@ -3,6 +3,7 @@
 namespace App\Http\DTOs\Admin\Role\Request;
 
 use App\Http\Requests\Admin\RoleRequest;
+use App\Http\Enums\ActivationStatusEnum;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
@@ -14,6 +15,7 @@ class RoleRequestDto extends Data
         public int $adminId,
         public string $name,
         public array $permissions,
+        public int $status,
     ) {
     }
 
@@ -22,7 +24,8 @@ class RoleRequestDto extends Data
         return new self(
             auth('admin')->user()->id,
             $request->input('name'),
-            $request->input('permissions')
+            $request->input('permissions'),
+            ActivationStatusEnum::ACTIVE->value
         );
     }
 }

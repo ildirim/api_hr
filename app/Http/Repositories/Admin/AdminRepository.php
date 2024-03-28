@@ -3,11 +3,12 @@
 namespace App\Http\Repositories\Admin;
 
 use App\Exceptions\NotFoundException;
-use App\Http\Requests\Admin\AdminRequest;
+use App\Http\DTOs\Admin\Admin\Request\AdminRequestDto;
 use App\Http\Resources\Admin\AdminResource;
 use App\Interfaces\Admin\Admin\AdminRepositoryInterface;
 use App\Models\Admin;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 class AdminRepository implements AdminRepositoryInterface
 {
@@ -15,44 +16,46 @@ class AdminRepository implements AdminRepositoryInterface
     {
     }
 
-    public function admins(): JsonResource
+    public function admins(): Collection
     {
-        return AdminResource::collection($this->admin->with('roles')->get());
+        return $this->admin->with(['roles' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
-    public function adminById(int $id): JsonResource
+    public function adminById(int $id): Admin
     {
         $admin = $this->admin->find($id);
         if (!$admin) {
             throw new NotFoundException('İstifadəçi tapılmadı');
         }
-        return new AdminResource($admin);
+        return $admin;
     }
 
-    public function store(AdminRequest $request): JsonResource
+    public function store(AdminRequestDto $dto): Admin
     {
-        $requestData = $request->validated();
-        $requestData['password'] = bcrypt($requestData['password']);
-        return new AdminResource($this->admin->create($requestData));
+        return $this->admin->create($dto->toArray());
     }
 
-    public function update(int $id, AdminRequest $request): JsonResource
+    public function update(int $id, AdminRequestDto $dto): Admin
     {
         $admin = $this->admin->find($id);
         if (!$admin) {
             throw new NotFoundException('İstifadəçi tapılmadı');
         }
 
-        $requestData = $request->validated();
-        if($request->password) {
-            $requestData['password'] = bcrypt($request->password);
+        $requestData = $dto->toArray();
+        if ($dto->password) {
+            $requestData['password'] = bcrypt($dto->password);
         }
         $admin->update($requestData);
 
-        return new AdminResource($admin);
+        return $admin;
     }
 
-    public function destroy(int $id): JsonResource
+    public function destroy(int $id): Admin
     {
         $admin = $this->admin->find($id);
         if (!$admin) {
@@ -60,6 +63,6 @@ class AdminRepository implements AdminRepositoryInterface
         }
         $admin->delete();
 
-        return new AdminResource($admin);
+        return $admin;
     }
 }

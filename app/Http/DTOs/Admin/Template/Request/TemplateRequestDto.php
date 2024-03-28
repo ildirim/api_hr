@@ -30,7 +30,7 @@ static function fromRequest(TemplateRequest $request): static
         $request->input('languageId'),
         $request->input('planCode'),
         $request->input('name'),
-        Optional::create(),
+        auth('admin')->user()->company_id,
         Optional::create(),
         Optional::create(),
     );

@@ -7,6 +7,7 @@ use App\Http\DTOs\Admin\JobCategory\Request\JobCategoryRequestDto;
 use App\Interfaces\Admin\JobCategory\JobCategoryRepositoryInterface;
 use App\Models\JobCategory;
 use App\Models\JobCategoryTranslation;
+use App\Http\Enums\LanguageEnum;
 use Illuminate\Support\Collection;
 
 class JobCategoryRepository implements JobCategoryRepositoryInterface
@@ -21,6 +22,15 @@ class JobCategoryRepository implements JobCategoryRepositoryInterface
             $query->select('id', 'job_category_id', 'language_id', 'name');
         }])
             ->select('id')
+            ->get();
+    }
+
+    public function jobCategoriesByLocale(?string $locale): Collection
+    {
+        return $this->jobCategory->select('job_categories.id', 'jct.id as job_category_id', 'jct.language_id', 'jct.name')
+            ->join('job_category_translations as jct', 'jct.job_category_id', 'job_categories.id')
+            ->join('languages as l', 'l.id', 'jct.language_id')
+            ->where('l.locale', $locale ?? LanguageEnum::AZERBAJANIAN->value)
             ->get();
     }
 

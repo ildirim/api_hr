@@ -2,12 +2,12 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Http\Requests\Admin\AdminRequest;
-use App\Http\Resources\Admin\AdminResource;
+use App\Http\DTOs\Admin\Admin\Request\AdminRequestDto;
+use App\Http\DTOs\Admin\Admin\Response\AdminResponseDto;
 use App\Interfaces\Admin\Admin\AdminRepositoryInterface;
 use App\Interfaces\Admin\Admin\AdminServiceInterface;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
+use Spatie\LaravelData\DataCollection;
 
 class AdminService implements AdminServiceInterface
 {
@@ -15,48 +15,48 @@ class AdminService implements AdminServiceInterface
     {
     }
 
-    public function admins(): JsonResource
+    public function admins(): DataCollection
     {
-        return $this->adminRepository->admins();
+        return AdminResponseDto::collection($this->adminRepository->admins());
     }
 
-    public function adminById(int $id): JsonResource
+    public function adminById(int $id): AdminResponseDto
     {
-        return $this->adminRepository->adminById($id);
+        return AdminResponseDto::from($this->adminRepository->adminById($id));
     }
 
-    public function store(AdminRequest $request): JsonResource
+    public function store(AdminRequestDto $dto): AdminResponseDto
     {
         DB::beginTransaction();
         try {
-            $user = $this->adminRepository->store($request);
-            $user->assignRole($request->roles);
+            $user = $this->adminRepository->store($dto);
+            $user->assignRole($dto->roles);
             DB::commit();
 
-            return new AdminResource($user);
+            return AdminResponseDto::from($user);
         } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
     }
 
-    public function update(int $id, AdminRequest $request): JsonResource
+    public function update(int $id, AdminRequestDto $dto): AdminResponseDto
     {
         DB::beginTransaction();
         try {
-            $user = $this->adminRepository->update($id, $request);
-            $user->syncRoles($request->roles);
+            $user = $this->adminRepository->update($id, $dto);
+            $user->syncRoles($dto->roles);
             DB::commit();
 
-            return new AdminResource($user);
+            return AdminResponseDto::from($user);
         } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
     }
 
-    public function destroy(int $id): JsonResource
+    public function destroy(int $id): AdminResponseDto
     {
-        return $this->adminRepository->destroy($id);
+        return AdminResponseDto::from($this->adminRepository->destroy($id));
     }
 }

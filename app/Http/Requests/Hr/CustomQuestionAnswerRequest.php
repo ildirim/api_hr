@@ -22,7 +22,7 @@ class CustomQuestionAnswerRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'templateCategoryId' => 'required|integer|digits_between:1,11|exists:template_categories,id',
+            'templateId' => 'required|integer|digits_between:1,11|exists:templates,id',
             'languageId' => 'required|integer|digits_between:1,11|exists:languages,id',
             'content' => 'required|max:2000',
 
@@ -35,10 +35,10 @@ class CustomQuestionAnswerRequest extends BaseRequest
     public function messages(): array
     {
         return [
-            'templateCategoryId.required' => 'Şablon kateqoriyası daxil edin',
-            'templateCategoryId.integer' => 'Şablon kateqoriyası rəqəm tipi olmalıdır',
-            'templateCategoryId.exists' => 'Şablon kateqoriyası mövcud deyil',
-            'templateCategoryId.digits_between' => 'Şablon kateqoriyası maksimal 11 simvol ola bilər',
+            'templateId.required' => 'Şablon daxil edin',
+            'templateId.integer' => 'Şablon rəqəm tipi olmalıdır',
+            'templateId.exists' => 'Şablon mövcud deyil',
+            'templateId.digits_between' => 'Şablon maksimal 11 simvol ola bilər',
             'languageId.required' => 'Dil daxil edin',
             'languageId.integer' => 'Dil rəqəm tipi olmalıdır',
             'languageId.exists' => 'Dil mövcud deyil',
