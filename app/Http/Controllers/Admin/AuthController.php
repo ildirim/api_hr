@@ -33,46 +33,25 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        try {
-            $credentials = $request->only('email', 'password');
-            $token = auth('admin')->attempt($credentials);
-            if (!$token) {
-                return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('email_and_password_are_wrong')]);
-            }
-            $admin = Admin::find(auth('admin')->user()->id);
-            if ($admin->status == AdminStatusEnum::DEACTIVE->value) {
-                return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('account_is_not_active')]);
-            }
-            $token = $this->payloadToToken($admin, $credentials);
-            $response = [
-                'token' => $token
-            ];
-            return $this->success(Response::HTTP_OK, $response);
-        } catch (\Exception $e) {
-            return $this->error(Response::HTTP_BAD_REQUEST, ['error' => $e->getMessage()]);
+        $credentials = $request->only('email', 'password');
+        $token = auth('admin')->attempt($credentials);
+        if (!$token) {
+            return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('email_and_password_are_wrong')]);
         }
+        $admin = Admin::find(auth('admin')->user()->id);
+        if ($admin->status == AdminStatusEnum::DEACTIVE->value) {
+            return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('account_is_not_active')]);
+        }
+        $token = $this->payloadToToken($admin, $credentials);
+        $response = [
+            'token' => $token
+        ];
+        return $this->success(Response::HTTP_OK, $response);
     }
 
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->stateless()->redirect();
-    }
-    public function loginWithGoogle()
-    {
-        $googleUser = Socialite::driver('google')->stateless()->user();
-        $admin = Admin::whereEmail($googleUser->email)->first();
-        if (!$admin) {
-            $request = [
-                'first_name' => $googleUser->user['given_name'],
-                'last_name' => $googleUser->user['family_name'],
-                'email' => $googleUser->email,
-                'profile_image' => $googleUser->user['picture'],
-                'password' => bcrypt(Str::random(12)),
-                'status' => AdminStatusEnum::ACTIVE->value
-            ];
-            $admin = Admin::create($request);
-        }
-        return $admin;
     }
 
     public function payloadToToken(

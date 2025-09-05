@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\BaseResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\VehicleBrand;
@@ -9,6 +10,8 @@ use App\Models\VehicleModel;
 
 class TestController extends Controller
 {
+    use BaseResponse;
+
     public function index(Request $request)
     {
         $cars =[
@@ -2356,10 +2359,10 @@ class TestController extends Controller
         'Terralord'
     ]
 ];
-
+return $this->success($cars);
         foreach ($cars as $markName => $models) {
             $mark = VehicleBrand::create(['name' => $markName]);
-            
+
             foreach ($models as $modelNamet => $modelName) {
                 if (is_array($modelName)) {
                     $lastEvhicleModelId = VehicleModel::create([

@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryListRequestDto;
 use App\Http\Requests\Hr\TemplateCategoryRequest;
 use App\Interfaces\Hr\TemplateCategory\TemplateCategoryServiceInterface;
+use App\Traits\BaseResponse;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class TemplateCategoryController extends Controller
 {
+    use BaseResponse;
+
     public function __construct(protected TemplateCategoryServiceInterface $templateCategoryService)
     {
     }
@@ -19,6 +22,6 @@ class TemplateCategoryController extends Controller
     {
         $requestDto = TemplateCategoryListRequestDto::fromRequest($request);
         $questionCategories = $this->templateCategoryService->storeList($requestDto);
-        return $this->success(Response::HTTP_OK, $questionCategories);
+        return $this->success($questionCategories);
     }
 }

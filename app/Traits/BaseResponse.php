@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\DTO\Common\ErrorResponseDto;
-use App\DTO\Common\SuccessResponseDto;
+use App\Http\DTOs\Common\ErrorResponseDto;
+use App\Http\DTOs\Common\SuccessResponseDto;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
