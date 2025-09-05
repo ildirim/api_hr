@@ -2,12 +2,15 @@
 
 namespace App\Exceptions;
 
+use App\Traits\BaseResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use BaseResponse;
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
@@ -24,8 +27,12 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (ValidationException $e) {
+            return $this->error($e->errors(), $e->getMessage());
+        });
+
+        $this->renderable(function (\Throwable $e) {
+            return $this->error([], $e->getMessage());
         });
     }
 
@@ -36,12 +43,8 @@ class Handler extends ExceptionHandler
         } elseif ($e instanceof BadRequestException) {
             return $e->render();
         }
-        dd($e);
-        return response()->json($this->responseData(
-            Response::HTTP_BAD_REQUEST,
-            'error', $e->getMessage()),
-            Response::HTTP_BAD_REQUEST
-        );
+
+        return $this->error([], $e->getMessage());
     }
 
     private function responseData(int $code = Response::HTTP_OK, ?string $message = null, $data = []): array
