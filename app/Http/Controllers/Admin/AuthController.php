@@ -14,6 +14,7 @@ use App\Http\Requests\Admin\PasswordRequest;
 use App\Http\Requests\Admin\RegisterRequest;
 use App\Http\Services\Admin\AuthService;
 use App\Models\Admin;
+use App\Traits\BaseResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 class AuthController extends Controller
 {
+    use BaseResponse;
+
     public function __construct(private readonly AuthService $authService)
     {
         $this->middleware('auth:admin', ['except' => ['login', 'loginWithGoogle', 'redirectToGoogle', 'register', 'confirmPassword']]);
@@ -36,17 +39,17 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         $token = auth('admin')->attempt($credentials);
         if (!$token) {
-            return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('email_and_password_are_wrong')]);
+            return $this->error(__('email_and_password_are_wrong'));
         }
         $admin = Admin::find(auth('admin')->user()->id);
         if ($admin->status == AdminStatusEnum::DEACTIVE->value) {
-            return $this->error(Response::HTTP_FORBIDDEN, ['error' => __('account_is_not_active')]);
+            return $this->error(__('account_is_not_active'));
         }
         $token = $this->payloadToToken($admin, $credentials);
         $response = [
             'token' => $token
         ];
-        return $this->success(Response::HTTP_OK, $response);
+        return $this->success($response);
     }
 
     public function redirectToGoogle()
@@ -84,7 +87,7 @@ class AuthController extends Controller
         $requestDto = RegisterRequestDto::fromRequest($request);
         $admin = Admin::create($requestDto->toArray());
 
-        return $this->success(Response::HTTP_OK, ['admin' => $admin]);
+        return $this->success(['admin' => $admin]);
     }
 
     public function confirmPassword(int $id, ConfirmPasswordRequest $request): JsonResponse
@@ -92,15 +95,15 @@ class AuthController extends Controller
         $requestDto = ConfirmPasswordRequestDto::fromRequest($request);
         $admin = Admin::find($id);
         if (!$admin) {
-            return $this->error(Response::HTTP_BAD_REQUEST, ['error' => __('user_not_found')]);
+            return $this->error( __('user_not_found'));
         }
         if ($admin->status != AdminStatusEnum::PENDING->value) {
-            return $this->error(Response::HTTP_BAD_REQUEST, ['error' => __('user_already_exist')]);
+            return $this->error( __('user_already_exist'));
         }
         $admin->update($requestDto->toArray());
 
         $token = auth('admin')->login($admin);
-        return $this->success(Response::HTTP_OK, ['token' => $token]);
+        return $this->success(['token' => $token]);
     }
 
     public function updatePassword(int $id, PasswordRequest $request)

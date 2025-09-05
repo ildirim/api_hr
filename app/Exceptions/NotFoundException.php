@@ -2,23 +2,16 @@
 
 namespace App\Exceptions;
 
+use App\Traits\BaseResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
 
 class NotFoundException extends Exception
 {
+    use BaseResponse;
+
     public function render()
     {
-        $code = Response::HTTP_NOT_FOUND;
-        $message = 'Error';
-        $data = ['error' => [$this->message]];
-
-        $responseData = [
-            'code' => $code,
-            'message' => $message,
-            'data' => $data
-        ];
-
-        return response()->json($responseData, $code);
+        return $this->error(null, $this->message, 'error', Response::HTTP_NOT_FOUND);
     }
 }
