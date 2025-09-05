@@ -39,11 +39,11 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         $token = auth('admin')->attempt($credentials);
         if (!$token) {
-            return $this->error(__('email_and_password_are_wrong'));
+            return $this->error(null, __('email_and_password_are_wrong'));
         }
         $admin = Admin::find(auth('admin')->user()->id);
         if ($admin->status == AdminStatusEnum::DEACTIVE->value) {
-            return $this->error(__('account_is_not_active'));
+            return $this->error(null, __('account_is_not_active'));
         }
         $token = $this->payloadToToken($admin, $credentials);
         $response = [
