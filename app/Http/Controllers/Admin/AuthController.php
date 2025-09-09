@@ -70,13 +70,13 @@ class AuthController extends Controller
         }
         $payload = [
             'firstName' => $admin->first_name,
-            'last_name' => $admin->lastName,
+            'lastName' => $admin->lastName,
             'email' => $admin->email,
             'phone' => $admin->phone,
             'profileImage' => $admin->profile_image,
             'status' => $admin->status,
-            'role' => $roleNames,
-            'permissions' => $permissionNames
+//            'role' => $roleNames,
+//            'permissions' => $permissionNames
         ];
 
         return JWTAuth::claims($payload)->attempt($credentials);
