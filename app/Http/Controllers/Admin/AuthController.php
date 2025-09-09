@@ -137,7 +137,7 @@ class AuthController extends Controller
     {
         try {
             $profile = $this->authService->profile();
-            return $this->success(Response::HTTP_OK, $profile);
+            return $this->success($profile);
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
             return response()->json(['token_expired'], 500);
         } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
