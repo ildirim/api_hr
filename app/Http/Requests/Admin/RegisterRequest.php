@@ -26,7 +26,7 @@ class RegisterRequest extends BaseRequest
             'firstName' => 'required|string|min:3|max:100',
             'lastName' => 'required|string|min:3|max:100',
             'email' => 'required|string|email|min:3|max:100|unique:admins,email',
-            'phone' => 'required|string|max:20|unique:admins,phone',
+            'phone' => 'required|string|size:13|unique:admins,phone',
         ];
     }
 
