@@ -7,10 +7,8 @@ use App\Http\DTOs\Admin\Role\Request\RoleRequestDto;
 use App\Http\DTOs\Admin\Role\Response\RoleResponseDto;
 use App\Http\DTOs\Admin\Role\Response\RoleByIdResponseDto;
 use App\Http\Enums\ActivationStatusEnum;
-use App\Http\Requests\Admin\RoleRequest;
 use App\Interfaces\Admin\Permission\PermissionRepositoryInterface;
 use App\Interfaces\Admin\Role\RoleRepositoryInterface;
-use App\Interfaces\Admin\Permission\PermissionServiceInterface;
 use App\Interfaces\Admin\Role\RoleServiceInterface;
 use App\Helpers\PermissionHelper;
 use Illuminate\Support\Facades\DB;
@@ -96,7 +94,7 @@ class RoleService implements RoleServiceInterface
     {
         $role = $this->roleRepository->roleById($id, auth('admin')->user()->id);
         $status = $role->status == ActivationStatusEnum::ACTIVE->value
-            ? ActivationStatusEnum::DEACTIVE->value
+            ? ActivationStatusEnum::INACTIVE->value
             : ActivationStatusEnum::ACTIVE->value;
         return RoleResponseDto::from($this->roleRepository->updateStatus($role, $status));
     }

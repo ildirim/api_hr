@@ -23,6 +23,5 @@ class BaseRequest extends FormRequest
                 Response::HTTP_UNPROCESSABLE_ENTITY
             )
         );
-
     }
 }

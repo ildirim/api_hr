@@ -3,10 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\DTOs\Admin\Auth\Request\ConfirmPasswordRequestDto;
-use App\Http\DTOs\Admin\Auth\Request\PasswordRequestDto;
-use App\Http\DTOs\Admin\Auth\Request\RegisterRequestDto;
-use App\Http\Enums\ActivationStatusEnum;
 use App\Http\Enums\AdminStatusEnum;
 use App\Http\Requests\Admin\ConfirmPasswordRequest;
 use App\Http\Requests\Admin\LoginRequest;
@@ -16,15 +12,10 @@ use App\Http\Services\Admin\AuthService;
 use App\Models\Admin;
 use App\Traits\BaseResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
+
 class AuthController extends Controller
 {
     use BaseResponse;
@@ -42,7 +33,7 @@ class AuthController extends Controller
             return $this->error(null, __('email_and_password_are_wrong'));
         }
         $admin = Admin::find(auth('admin')->user()->id);
-        if ($admin->status == AdminStatusEnum::DEACTIVE->value) {
+        if ($admin->status == AdminStatusEnum::INACTIVE->value) {
             return $this->error(null, __('account_is_not_active'));
         }
         $token = $this->payloadToToken($admin, $credentials);
@@ -62,47 +53,31 @@ class AuthController extends Controller
         array $credentials,
     ): string
     {
-        $permissionNames = [];
-        $roleNames = [];
-        foreach ($admin->roles as $role)  {
-            $roleNames[] = $role->name;
-            $permissionNames = array_merge($permissionNames, $role->permissions->pluck('name')->toArray());
-        }
+        /** @var $user Admin */
+        $role = $admin->roles->first();
+        $permissions = $role?->permissions() ? $role->permissions()->pluck('name')->toArray() : [];
         $payload = [
             'firstName' => $admin->first_name,
-            'lastName' => $admin->lastName,
+            'lastName' => $admin->last_name,
             'email' => $admin->email,
             'phone' => $admin->phone,
             'profileImage' => $admin->profile_image,
             'status' => $admin->status,
-//            'role' => $roleNames,
-//            'permissions' => $permissionNames
+            'role' => $role?->name,
+            'permissions' => $permissions
         ];
-
         return JWTAuth::claims($payload)->attempt($credentials);
     }
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $requestDto = RegisterRequestDto::fromRequest($request);
-        $admin = Admin::create($requestDto->toArray());
-
-        return $this->success(['admin' => $admin]);
+        $this->authService->register($request);
+        return $this->success(null, __('account_created'), 'success', Response::HTTP_CREATED);
     }
 
-    public function confirmPassword(int $id, ConfirmPasswordRequest $request): JsonResponse
+    public function confirmPassword(ConfirmPasswordRequest $request): JsonResponse
     {
-        $requestDto = ConfirmPasswordRequestDto::fromRequest($request);
-        $admin = Admin::find($id);
-        if (!$admin) {
-            return $this->error( __('user_not_found'));
-        }
-        if ($admin->status != AdminStatusEnum::PENDING->value) {
-            return $this->error( __('user_already_exist'));
-        }
-        $admin->update($requestDto->toArray());
-
-        $token = auth('admin')->login($admin);
+        $token = $this->authService->confirmPassword($request);
         return $this->success(['token' => $token]);
     }
 
@@ -133,17 +108,17 @@ class AuthController extends Controller
         ]);
     }
 
-    public function profile()
+    public function profile(): JsonResponse
     {
         try {
             $profile = $this->authService->profile();
             return $this->success($profile);
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json(['token_expired'], 500);
+            return response()->json(['token_expired'], 400);
         } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['token_invalid'], 500);
+            return response()->json(['token_invalid'], 400);
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['token_absent' => $e->getMessage()], 500);
+            return response()->json(['token_absent' => $e->getMessage()], 400);
         }
     }
 }

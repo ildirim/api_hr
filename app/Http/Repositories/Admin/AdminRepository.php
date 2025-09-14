@@ -4,10 +4,9 @@ namespace App\Http\Repositories\Admin;
 
 use App\Exceptions\NotFoundException;
 use App\Http\DTOs\Admin\Admin\Request\AdminRequestDto;
-use App\Http\Resources\Admin\AdminResource;
+use App\Http\DTOs\Admin\Auth\Request\RegisterRequestDto;
 use App\Interfaces\Admin\Admin\AdminRepositoryInterface;
 use App\Models\Admin;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 
 class AdminRepository implements AdminRepositoryInterface
@@ -32,6 +31,19 @@ class AdminRepository implements AdminRepositoryInterface
             throw new NotFoundException('İstifadəçi tapılmadı');
         }
         return $admin;
+    }
+
+    public function getAdminByEmailOrPhone(string $email, string $phone): ?Admin
+    {
+        return $this->admin
+            ->where('email', $email)
+            ->where('phone', $phone)
+            ->first();
+    }
+
+    public function register(RegisterRequestDto $dto): Admin
+    {
+        return $this->admin->create($dto->toArray());
     }
 
     public function store(AdminRequestDto $dto): Admin

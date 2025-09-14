@@ -26,7 +26,7 @@ Route::controller(AuthController::class)
         Route::post('login', 'login');
         Route::get('login/google', 'loginWithGoogle');
         Route::post('register', 'register');
-        Route::post('confirm-password/{id}', 'confirmPassword');
+        Route::post('confirm-password', 'confirmPassword');
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
 });
