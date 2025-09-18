@@ -31,7 +31,7 @@ class JobSubcategoryRepository implements JobSubcategoryRepositoryInterface
             ->join('job_subcategory_translations as jsct', 'jsct.job_subcategory_id', 'job_subcategories.id')
             ->join('languages as l', 'l.id', 'jsct.language_id')
             ->where('job_subcategories.job_category_id', $jobCategoryId)
-            ->where('l.locale', $locale ?? LanguageEnum::AZERBAJANIAN->value)
+            ->where('l.locale', $locale ?? LanguageEnum::ENGLISH->value)
             ->get();
     }
 

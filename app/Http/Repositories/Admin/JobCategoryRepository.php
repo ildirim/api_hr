@@ -30,7 +30,7 @@ class JobCategoryRepository implements JobCategoryRepositoryInterface
         return $this->jobCategory->select('job_categories.id', 'jct.id as job_category_id', 'jct.language_id', 'jct.name')
             ->join('job_category_translations as jct', 'jct.job_category_id', 'job_categories.id')
             ->join('languages as l', 'l.id', 'jct.language_id')
-            ->where('l.locale', $locale ?? LanguageEnum::AZERBAJANIAN->value)
+            ->where('l.locale', $locale ?? LanguageEnum::ENGLISH->value)
             ->get();
     }
 
