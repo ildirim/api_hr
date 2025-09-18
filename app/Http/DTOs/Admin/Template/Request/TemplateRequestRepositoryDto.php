@@ -13,7 +13,7 @@ class TemplateRequestRepositoryDto extends Data
     public function __construct(
         public int $jobSubcategoryId,
         public int $adminId,
-        public int $companyId,
+        public ?int $companyId,
         public int $languageId,
         public int $planCode,
         public string $name,

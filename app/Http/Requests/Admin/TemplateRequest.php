@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\RequiredIfLanguageIsOne;
 
 class TemplateRequest extends BaseRequest
 {
@@ -28,10 +29,10 @@ class TemplateRequest extends BaseRequest
     {
         return [
             'jobSubcategoryId' => 'required|integer|digits_between:1,11|exists:job_subcategories,id',
-            'languageId' => 'required|integer|digits_between:1,11|exists:languages,id',
-            'planCode' => 'required|integer|digits_between:1,11|exists:enum_datas,code',
-            'name' => 'required|string|between:3,100',
-            'timingCode' => 'integer|digits_between:1,11|exists:enum_datas,code',
+            'languageId' => 'required|numeric',
+            'planCode' => 'required|integer|digits_between:1,11', // enum
+            'name' => ['between:3,100', new RequiredIfLanguageIsOne()],
+            'timingCode' => 'integer|digits_between:1,11', // enum
             'duration' => 'integer|digits_between:1,11',
         ];
     }
@@ -40,10 +41,10 @@ class TemplateRequest extends BaseRequest
     {
         return [
             'jobSubcategoryId' => 'required|integer|digits_between:1,11|exists:job_subcategories,id',
-            'languageId' => 'required|integer|digits_between:1,11|exists:languages,id',
-            'planCode' => 'required|integer|digits_between:1,11|exists:enum_datas,code',
-            'name' => 'required|string|between:3,100',
-            'timingCode' => 'integer|digits_between:1,11|exists:enum_datas,code',
+            'languageId' => 'required|numeric',
+            'planCode' => 'required|integer|digits_between:1,11',
+            'name' => ['between:3,100', new RequiredIfLanguageIsOne()],
+            'timingCode' => 'integer|digits_between:1,11',
             'duration' => 'integer|digits_between:1,11',
         ];
     }
@@ -67,9 +68,6 @@ class TemplateRequest extends BaseRequest
             'name.required' => 'Şablon adı daxil edin',
             'name.string' => 'Şablon adı yazı tipi olmalıdır',
             'name.between' => 'Şablon adı maksimal 100 simvol ola bilər',
-            'companyId.integer' => 'Şirkət rəqəm tipi olmalıdır',
-            'companyId.exists' => 'Şirkət mövcud deyil',
-            'companyId.digits_between' => 'Şirkət maksimal 11 simvol ola bilər',
             'timingCode.required' => 'Vaxt seçimi daxil edin',
             'timingCode.integer' => 'Vaxt seçimi rəqəm tipi olmalıdır',
             'timingCode.exists' => 'Vaxt seçimi mövcud deyil',
@@ -86,7 +84,6 @@ class TemplateRequest extends BaseRequest
             'languageId' => 'trim',
             'planCode' => 'trim',
             'name' => 'trim',
-            'companyId' => 'trim',
             'timingCode' => 'trim',
             'duration' => 'trim',
         ];

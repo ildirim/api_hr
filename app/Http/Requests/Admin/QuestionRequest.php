@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\RequiredIfLanguageIsOne;
 
 class QuestionRequest extends BaseRequest
 {
@@ -23,10 +24,10 @@ class QuestionRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'language_id' => 'required|integer|exists:languages,id',
+            'language_id' => 'required|numeric',
             'job_subcategory_id' => 'required|integer|exists:job_subcategories,id',
             'question_category_id' => 'required|integer|exists:question_categories,id',
-            'question_level' => 'required|integer',
+            'question_level' => ['required', 'integer', new RequiredIfLanguageIsOne()],
             'period' => 'required|integer',
             'content' => 'required|max:2000',
             'answers' => 'array'

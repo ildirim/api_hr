@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\RequiredIfLanguageIsOne;
 
 class JobSubcategoryRequest extends BaseRequest
 {
@@ -30,8 +31,8 @@ class JobSubcategoryRequest extends BaseRequest
             'jobCategoryId' => 'required|integer|exists:job_categories,id',
             'translations' => 'required|array',
 
-            'translations.*.name' => 'required',
-            'translations.*.languageId' => 'required|numeric|exists:languages,id',
+            'translations.*.name' => ['required', new RequiredIfLanguageIsOne()],
+            'translations.*.languageId' => 'required|numeric',
 
         ];
     }
@@ -43,8 +44,8 @@ class JobSubcategoryRequest extends BaseRequest
             'translations' => 'required|array',
 
             'translations.*.id' => '',
-            'translations.*.name' => 'required',
-            'translations.*.languageId' => 'required|numeric|exists:languages,id',
+            'translations.*.name' => ['required', new RequiredIfLanguageIsOne()],
+            'translations.*.languageId' => 'required|numeric',
 
         ];
     }

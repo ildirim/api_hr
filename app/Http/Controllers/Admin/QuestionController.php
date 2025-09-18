@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\DTOs\Admin\Question\Request\QuestionRequestDto;
 use App\Http\DTOs\Admin\Question\Request\QuestionSelectRequestDto;
 use App\Http\Requests\Admin\Question\QuestionSelectRequest;
 use App\Http\Requests\Admin\QuestionRequest;
@@ -21,17 +22,17 @@ class QuestionController extends Controller
 
     public function questions(QuestionSelectRequest $request): JsonResponse
     {
-        $questionSelectRequestDto = QuestionSelectRequestDto::fromRequest($request);
+        $questionSelectRequestDto = QuestionSelectRequestDto::from($request->validated());
         $questionCategories = $this->questionService->questions($questionSelectRequestDto);
         return $this->success($questionCategories);
     }
 
-    public function shuffleQuestions(QuestionMixedRequest $request): JsonResponse
-    {
-        $questionMixedRequestDto = QuestionMixedRequestDto::fromRequest($request);
-        $questionCategories = $this->questionService->questionsForSimpleTemplate($questionMixedRequestDto);
-        return $this->success($questionCategories);
-    }
+//    public function shuffleQuestions(QuestionMixedRequest $request): JsonResponse
+//    {
+//        $questionMixedRequestDto = QuestionMixedRequestDto::fromRequest($request);
+//        $questionCategories = $this->questionService->questionsForSimpleTemplate($questionMixedRequestDto);
+//        return $this->success($questionCategories);
+//    }
 
     public function questionById(int $id): JsonResponse
     {
@@ -42,7 +43,7 @@ class QuestionController extends Controller
     public function store(QuestionRequest $request): JsonResponse
     {
         $requestData = $request->validated();
-        $requestDto = QuestionRequestMapper::requestToDto($requestData);
+        $requestDto = QuestionRequestDto::from($requestData);
         $question = $this->questionService->store($requestDto);
         return $this->success($question, 'Question created successfully', 'success', Response::HTTP_CREATED);
     }
@@ -50,7 +51,7 @@ class QuestionController extends Controller
     public function update(int $id, QuestionRequest $request): JsonResponse
     {
         $requestData = $request->validated();
-        $requestDto = QuestionRequestMapper::requestToDto($requestData);
+        $requestDto = QuestionRequestDto::from($requestData);
         $result = $this->questionService->update($id, $requestDto);
         return $this->success($result);
     }

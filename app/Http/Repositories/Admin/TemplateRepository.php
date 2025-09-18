@@ -3,9 +3,6 @@
 namespace App\Http\Repositories\Admin;
 
 use App\Http\DTOs\Admin\Template\Request\TemplateRequestDto;
-use App\Http\DTOs\Admin\Template\Request\TemplateRequestRepositoryDto;
-use App\Http\Requests\Admin\TemplateRequest;
-use App\Http\Resources\Admin\TemplateResource;
 use App\Interfaces\Admin\Template\TemplateRepositoryInterface;
 use App\Models\Template;
 use Illuminate\Support\Collection;
@@ -30,7 +27,7 @@ class TemplateRepository implements TemplateRepositoryInterface
             ->get();
     }
 
-    public function store(TemplateRequestRepositoryDto $request): Template
+    public function store(TemplateRequestDto $request): Template
     {
         return $this->template->create($request->toArray());
     }

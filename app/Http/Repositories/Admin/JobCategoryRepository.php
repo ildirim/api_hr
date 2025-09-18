@@ -34,17 +34,13 @@ class JobCategoryRepository implements JobCategoryRepositoryInterface
             ->get();
     }
 
-    public function jobCategoryById(int $id): JobCategory
+    public function jobCategoryById(int $id): ?JobCategory
     {
-        $jobCategory = $this->jobCategory->with(['translations' => function ($query) {
+        return $this->jobCategory->with(['translations' => function ($query) {
             $query->select('id', 'job_category_id', 'language_id', 'name');
         }])
             ->select('id')
             ->find($id);
-        if (!$jobCategory) {
-            throw new NotFoundException('Kateqoriya tapılmadı');
-        }
-        return $jobCategory;
     }
 
     public function store(): JobCategory

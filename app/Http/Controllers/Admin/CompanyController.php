@@ -32,14 +32,14 @@ class CompanyController extends Controller
 
     public function store(CompanyRequest $request): JsonResponse
     {
-        $requestDto = CompanyRequestDto::fromRequest($request);
+        $requestDto = CompanyRequestDto::from($request);
         $company = $this->companyService->store($requestDto);
         return $this->success($company, 'Company created successfully', 'success', Response::HTTP_CREATED);
     }
 
     public function update(int $id, CompanyRequest $request): JsonResponse
     {
-        $requestDto = CompanyRequestDto::fromRequest($request);
+        $requestDto = CompanyRequestDto::from($request);
         $result = $this->companyService->update($id, $requestDto);
         return $this->success($result);
     }

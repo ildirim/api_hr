@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Hr;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\RequiredIfLanguageIsOne;
 
 class CustomQuestionAnswerRequest extends BaseRequest
 {
@@ -23,8 +24,8 @@ class CustomQuestionAnswerRequest extends BaseRequest
     {
         return [
             'templateId' => 'required|integer|digits_between:1,11|exists:templates,id',
-            'languageId' => 'required|integer|digits_between:1,11|exists:languages,id',
-            'content' => 'required|max:2000',
+            'languageId' => 'required|numeric',
+            'content' => ['required', 'max:2000',  new RequiredIfLanguageIsOne()],
 
             'answers' => 'array',
             'answers.*.isCorrect' => 'required|integer|digits_between:1,4',

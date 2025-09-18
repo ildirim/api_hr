@@ -26,7 +26,7 @@ class TemplateController extends Controller
 
     public function store(TemplateRequest $request): JsonResponse
     {
-        $templateRequestDto = TemplateRequestDto::fromRequest($request);
+        $templateRequestDto = TemplateRequestDto::from($request->validated());
         $template = $this->templateService->store($templateRequestDto);
         return $this->success($template, 'Template created successfully', 'success', Response::HTTP_CREATED);
     }

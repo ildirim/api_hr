@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\RequiredIfLanguageIsOne;
+use Illuminate\Validation\Rule;
 
 class QuestionCategoryRequest extends BaseRequest
 {
@@ -24,25 +26,25 @@ class QuestionCategoryRequest extends BaseRequest
         return $this->isMethod('POST') ? $this->postValidation() : $this->putValidation();
     }
 
-    public function postValidation()
+    public function postValidation(): array
     {
         return [
             'translations' => 'required|array',
 
-            'translations.*.name' => 'required',
-            'translations.*.languageId' => 'required|numeric|exists:languages,id',
+            'translations.*.name' => new RequiredIfLanguageIsOne(),
+            'translations.*.languageId' => 'required|numeric',
 
         ];
     }
 
-    public function putValidation()
+    public function putValidation(): array
     {
         return [
             'translations' => 'required|array',
 
             'translations.*.id' => '',
-            'translations.*.name' => 'required',
-            'translations.*.languageId' => 'required|numeric|exists:languages,id',
+            'translations.*.name' => new RequiredIfLanguageIsOne(),
+            'translations.*.languageId' => 'required|numeric',
 
         ];
     }

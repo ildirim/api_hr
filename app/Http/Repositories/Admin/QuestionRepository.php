@@ -3,14 +3,12 @@
 namespace App\Http\Repositories\Admin;
 
 use App\Exceptions\NotFoundException;
-use App\Http\DTOs\Admin\Question\Request\QuestionMixedRequestDto;
 use App\Http\DTOs\Admin\Question\Request\QuestionRequestDto;
 use App\Http\DTOs\Admin\Question\Request\QuestionSelectRequestDto;
 use App\Interfaces\Admin\Question\QuestionRepositoryInterface;
 use App\Models\Question;
 use App\Models\QuestionTranslation;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class QuestionRepository implements QuestionRepositoryInterface
 {
@@ -20,7 +18,8 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function questions(QuestionSelectRequestDto $questionSelectRequestDto): Collection
     {
-        $request = $questionSelectRequestDto->toArray();
+
+        $lang = request()->header('lang') ?? 1;
         return $this->question->with([
             'translations' => function ($query) {
                 $query->select('id', 'question_id', 'language_id', 'content');
@@ -32,16 +31,25 @@ class QuestionRepository implements QuestionRepositoryInterface
                 }]);
             }
         ])
-            ->select('id', 'period', 'question_level')
-            ->questionCategory($request['questionCategory'])
-            ->level($request['questionLevel'])
-            ->jobSubcategory($request['jobSubcategory'])
+            ->select('q.id', 'q.period', 'q.question_level', 'qct.name as question_category_name', 'jst.name as job_subcategory_name')
+            ->from('questions as q')
+            ->leftJoin('question_category_translations as qct', function ($join) use ($lang) {
+                $join->on('qct.question_category_id', '=', 'q.question_category_id')
+                    ->where('qct.language_id', '=', $lang);
+            })
+            ->leftJoin('job_subcategory_translations as jst', function ($join) use ($lang) {
+                $join->on('jst.job_subcategory_id', '=', 'q.job_subcategory_id')
+                    ->where('jst.language_id', '=', $lang);
+            })
+            ->questionCategory($questionSelectRequestDto->questionCategory)
+            ->level($questionSelectRequestDto->questionLevel)
+            ->jobSubcategory($questionSelectRequestDto->jobSubcategory)
             ->get();
     }
 
-    public function questionById(int $id): Question
+    public function questionById(int $id): ?Question
     {
-        $question = $this->question->with([
+        return $this->question->with([
             'translations' => function ($query) {
                 $query->select('id', 'question_id', 'language_id', 'content');
             },
@@ -54,10 +62,6 @@ class QuestionRepository implements QuestionRepositoryInterface
         ])
             ->select('id', 'period', 'question_level')
             ->find($id);
-        if (!$question) {
-            throw new NotFoundException('Sual tapılmadı');
-        }
-        return $question;
     }
 
     public function store(QuestionRequestDto $request): Question

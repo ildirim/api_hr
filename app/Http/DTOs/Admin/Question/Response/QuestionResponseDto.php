@@ -16,6 +16,8 @@ class QuestionResponseDto extends Data
         public int $id,
         public int $question_level,
         public string $period,
+        public ?string $question_category_name,
+        public ?string $job_subcategory_name,
         #[DataCollectionOf(QuestionTranslationResponseDto::class)]
         public ?DataCollection $translations,
         #[DataCollectionOf(AnswerResponseDto::class)]

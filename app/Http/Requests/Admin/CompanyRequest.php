@@ -22,8 +22,7 @@ class CompanyRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'adminId' => 'required|integer|exists:admins,id',
-            'name' => 'required|string',
+            'name' => 'unique:companies,name,required|string',
             'phone' => 'required|string',
             'image' => '',
             'address' => '',
@@ -36,8 +35,7 @@ class CompanyRequest extends BaseRequest
     public function messages(): array
     {
         return [
-            'adminId.required' =>  'Admin daxil edin',
-            'adminId.exists' =>  'Admin mövcud deyil',
+            "name.unique" => "Ad unikal olmalıdır",
             "name.required" => "Ad daxil edin",
             "phone.required" => "Nömrə daxil edin",
         ];
@@ -46,7 +44,6 @@ class CompanyRequest extends BaseRequest
     public function filters(): array
     {
         return [
-            "adminId" => "trim",
             'name' => 'trim',
             'phone' => 'trim',
             'image' => 'trim',

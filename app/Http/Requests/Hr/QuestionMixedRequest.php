@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Hr;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\RequiredIfLanguageIsOne;
 
 class QuestionMixedRequest extends BaseRequest
 {
@@ -24,8 +25,8 @@ class QuestionMixedRequest extends BaseRequest
     {
         return [
             'jobSubcategoryId' => 'required',
-            'languageId' => 'required',
-            'companyId' => 'required',
+            'languageId' => 'required|numeric',
+            'companyId' => ['required', 'integer', new RequiredIfLanguageIsOne()],
         ];
     }
 

@@ -10,7 +10,7 @@ interface JobCategoryRepositoryInterface
 {
     public function jobCategories(): Collection;
 
-    public function jobCategoryById(int $id): JobCategory;
+    public function jobCategoryById(int $id): ?JobCategory;
 
     public function store(): JobCategory;
 

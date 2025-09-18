@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\RequiredIfLanguageIsOne;
 
 class QuestionAnswerRequest extends BaseRequest
 {
@@ -34,14 +35,14 @@ class QuestionAnswerRequest extends BaseRequest
             'period' => 'required|integer',
 
             'translations' => 'required|array',
-            'translations.*.content' => 'required|max:2000',
-            'translations.*.languageId' => 'required|numeric|exists:languages,id',
+            'translations.*.content' => ['required', 'max:2000', new RequiredIfLanguageIsOne()],
+            'translations.*.languageId' => 'required|numeric',
 
             'answers' => 'array',
             'answers.*.isCorrect' => 'required|integer',
 
             'answers.*.translations' => 'required|array',
-            'answers.*.translations.*.languageId' => 'required|integer',
+            'answers.*.translations.*.languageId' => 'required_if:is_default,true|numeric|exists:languages,id',
             'answers.*.translations.*.name' => 'required|max:255',
         ];
     }
@@ -57,14 +58,14 @@ class QuestionAnswerRequest extends BaseRequest
             'translations' => 'required|array',
             'translations.*.id' => '',
             'translations.*.content' => 'required|max:2000',
-            'translations.*.languageId' => 'required|numeric|exists:languages,id',
+            'translations.*.languageId' => 'required|numeric',
 
             'answers' => 'array',
             'answers.*.isCorrect' => 'required|integer',
 
             'answers.*.translations' => 'required|array',
             'answers.*.translations.*.id' => '',
-            'answers.*.translations.*.languageId' => 'required|integer',
+            'answers.*.translations.*.languageId' => 'required_if:is_default,true|numeric|exists:languages,id',
             'answers.*.translations.*.name' => 'required|max:255',
         ];
     }
