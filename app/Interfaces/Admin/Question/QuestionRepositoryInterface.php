@@ -11,7 +11,7 @@ interface QuestionRepositoryInterface
 {
     public function questions(QuestionSelectRequestDto $questionSelectRequestDto): Collection;
 
-    public function questionById(int $id): Question;
+    public function questionById(int $id): ?Question;
 
     public function store(QuestionRequestDto $request): Question;
 
