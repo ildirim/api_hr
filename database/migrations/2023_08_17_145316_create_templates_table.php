@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('language_id');
             $table->unsignedBigInteger('job_subcategory_id');
             $table->integer('duration')->default(0);
+            $table->integer('passing_score')->default(0); // ne ile olmalidi. faiz, dogru cavab sayi?
             $table->integer('plan_code');
             $table->integer('timing_code')->nullable();
             $table->string('name');

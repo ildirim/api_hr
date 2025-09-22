@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Hr;
 
 use App\Http\Controllers\Controller;
-use App\Http\DTOs\Hr\Question\Request\QuestionMixedRequestDto;
-use App\Http\Requests\Hr\QuestionMixedRequest;
+use App\Http\DTOs\Hr\Question\Request\ShuffledQuestionDto;
 use App\Interfaces\Hr\Question\QuestionServiceInterface;
 use App\Traits\BaseResponse;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class QuestionController extends Controller
 {
@@ -18,10 +16,9 @@ class QuestionController extends Controller
     {
     }
 
-    public function shuffleQuestions(QuestionMixedRequest $request): JsonResponse
+    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): JsonResponse
     {
-        $questionMixedRequestDto = QuestionMixedRequestDto::fromRequest($request);
-        $questionCategories = $this->questionService->questionsForSimpleTemplate($questionMixedRequestDto);
+        $questionCategories = $this->questionService->getShuffledQuestions($shuffledQuestionDto);
         return $this->success($questionCategories);
     }
 }

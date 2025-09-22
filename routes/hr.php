@@ -20,7 +20,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(QuestionController::class)
         ->prefix('questions')
         ->group(function () {
-            Route::get('shuffle', 'shuffleQuestions');
+            Route::get('shuffle', 'shuffledQuestions');
         });
 
     // custom questions

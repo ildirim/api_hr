@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('custom_question_id');
             $table->tinyInteger('is_correct')->default(0);
-            $table->string('name');
+            $table->string('answer_text', 2000);
 
             $table->foreign('custom_question_id')->references('id')->on('custom_questions')->onDelete('cascade');
         });

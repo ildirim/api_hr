@@ -14,14 +14,11 @@ return new class extends Migration
         Schema::create('template_category_questions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('template_category_id');
-            $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('question_id')->nullable();
-            $table->unsignedBigInteger('custom_question_id')->nullable();
+            $table->unsignedBigInteger('questionable_id')->nullable();
+            $table->string('type');
+            $table->integer('question_order_no')->default(0);
 
-            $table->foreign('template_category_id')->references('id')->on('template_categories');
-            $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('question_id')->references('id')->on('questions');
-            $table->foreign('custom_question_id')->references('id')->on('custom_questions');
+            $table->foreign('template__category_id')->references('id')->on('template__categories');
         });
     }
 

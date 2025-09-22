@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('answer_id');
             $table->unsignedBigInteger('language_id');
-            $table->string('name');
+            $table->string('answer_text', 2000);
 
             $table->foreign('answer_id')->references('id')->on('answers')->onDelete('cascade');
             $table->foreign('language_id')->references('id')->on('languages');
