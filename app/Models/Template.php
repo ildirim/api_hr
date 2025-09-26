@@ -20,6 +20,7 @@ class Template extends Model
         'timing_code',
         'name',
         'url',
+        'status',
     ];
 
     public function templateCategories(): HasMany

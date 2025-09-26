@@ -22,8 +22,11 @@ class TemplateService implements TemplateServiceInterface
         return TemplateResponseDto::collection($templates);
     }
 
-    public function store(TemplateRequestDto $request): TemplateResponseDto
+    public function store(TemplateRequestDto $request): void
     {
-        return TemplateResponseDto::from($this->templateRepository->store($request));
+        $admin = auth('admin')->user();
+        $request->adminId = $admin->id;
+        $request->companyId = $admin->company_id;
+        $this->templateRepository->store($request);
     }
 }

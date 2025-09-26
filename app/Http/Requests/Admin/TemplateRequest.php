@@ -31,7 +31,7 @@ class TemplateRequest extends BaseRequest
             'jobSubcategoryId' => 'required|integer|digits_between:1,11|exists:job_subcategories,id',
             'languageId' => 'required|numeric',
             'planCode' => 'required|integer|digits_between:1,11', // enum
-            'name' => ['between:3,100', new RequiredIfLanguageIsOne()],
+            'name' => 'between:3,100',
             'timingCode' => 'integer|digits_between:1,11', // enum
             'duration' => 'integer|digits_between:1,11',
         ];
@@ -43,7 +43,7 @@ class TemplateRequest extends BaseRequest
             'jobSubcategoryId' => 'required|integer|digits_between:1,11|exists:job_subcategories,id',
             'languageId' => 'required|numeric',
             'planCode' => 'required|integer|digits_between:1,11',
-            'name' => ['between:3,100', new RequiredIfLanguageIsOne()],
+            'name' => 'between:3,100',
             'timingCode' => 'integer|digits_between:1,11',
             'duration' => 'integer|digits_between:1,11',
         ];

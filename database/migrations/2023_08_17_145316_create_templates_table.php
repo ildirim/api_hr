@@ -14,15 +14,16 @@ return new class extends Migration
         Schema::create('templates', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('admin_id');
-            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('language_id');
             $table->unsignedBigInteger('job_subcategory_id');
             $table->integer('duration')->default(0);
             $table->integer('passing_score')->default(0); // ne ile olmalidi. faiz, dogru cavab sayi?
             $table->integer('plan_code');
-            $table->integer('timing_code')->nullable();
+            $table->integer('timing_code');
             $table->string('name');
             $table->string('url')->nullable();
+            $table->integer('status');
             $table->timestamps();
 
             $table->foreign('admin_id')->references('id')->on('admins');

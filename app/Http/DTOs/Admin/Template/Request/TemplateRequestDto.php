@@ -2,6 +2,7 @@
 
 namespace App\Http\DTOs\Admin\Template\Request;
 
+use App\Http\Enums\TemplateStatusEnum;
 use Spatie\LaravelData\Attributes\Computed;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
@@ -12,10 +13,12 @@ use Spatie\LaravelData\Optional;
 class TemplateRequestDto extends Data
 {
     #[Computed]
-    public int $adminId;
+    public ?int $adminId = null;
 
     #[Computed]
     public ?int $companyId = null;
+
+    public int $status = TemplateStatusEnum::INCOMPLETED->value;
 
     public function __construct(
         public int $jobSubcategoryId,
@@ -25,8 +28,5 @@ class TemplateRequestDto extends Data
         public int|Optional $timingCode,
         public int|Optional $duration,
     ) {
-        $admin = auth('admin')->user();
-        $this->adminId = $admin->id;
-        $this->companyId = $admin->company_id ?? null;
     }
 }

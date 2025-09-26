@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->integer('question_order_no')->default(0);
 
-            $table->foreign('template__category_id')->references('id')->on('template__categories');
+            $table->foreign('template_category_id')->references('id')->on('template_categories');
         });
     }
 

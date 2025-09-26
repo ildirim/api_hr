@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('template_id');
             $table->unsignedBigInteger('language_id');
-            $table->enum('type', \App\Http\Enums\QuestionTypeEnum::cases());
+            $table->integer('type');
             $table->string('content', 2000);
             $table->timestamps();
 

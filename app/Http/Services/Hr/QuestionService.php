@@ -22,7 +22,7 @@ class QuestionService implements QuestionServiceInterface
         $admin = auth('admin')->user();
 
         $shuffledQuestionDto->companyId = $admin->company_id;
-        if ($shuffledQuestionDto->type === TemplateTypeEnum::FREE) {
+        if ($shuffledQuestionDto->type === TemplateTypeEnum::FREE->value) {
             $questions = $this->questionRepository->getShuffledQuestions($shuffledQuestionDto);
         }
         return QuestionResponseDto::collection($questions);

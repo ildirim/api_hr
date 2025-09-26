@@ -10,5 +10,5 @@ interface TemplateServiceInterface
 {
     public function getTemplatesByCompanyId(int $companyId): DataCollection;
 
-    public function store(TemplateRequestDto $request): TemplateResponseDto;
+    public function store(TemplateRequestDto $request): void;
 }
