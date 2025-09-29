@@ -2,10 +2,15 @@
 
 namespace App\Interfaces\Hr\Template;
 
+use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateByIdResponseDto;
-use Spatie\LaravelData\DataCollection;
 
 interface TemplateServiceInterface
 {
-    public function templateById(int $id): ?TemplateByIdResponseDto;
+    public function getTemplateById(int $id): ?TemplateByIdResponseDto;
+
+    public function store(TemplateStoreDto $templateStoreDto): void;
+
+    public function update(int $id, TemplateUpdateDto $templateUpdateDto): void;
 }

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\DTOs\Hr\Template\Request\TemplateQuestionDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Interfaces\Hr\Template\TemplateServiceInterface;
 use App\Traits\BaseResponse;
 use Illuminate\Http\JsonResponse;
@@ -16,9 +19,27 @@ class TemplateController extends Controller
     {
     }
 
-    public function templateById(int $id): JsonResponse
+    public function getTemplateById(int $id): JsonResponse
     {
-        $template = $this->templateService->templateById($id);
+        $template = $this->templateService->getTemplateById($id);
         return $this->success($template);
+    }
+
+    public function store(TemplateStoreDto $templateStoreDto): JsonResponse
+    {
+        $this->templateService->store($templateStoreDto);
+        return $this->success(null, 'Template created successfully', 'success', Response::HTTP_CREATED);
+    }
+
+    public function storeQuestions(int $id, TemplateQuestionDto $templateQuestionDto): JsonResponse
+    {
+        $this->templateService->storeQuestions($id, $templateQuestionDto);
+        return $this->success(null, 'Template updated successfully', 'success', Response::HTTP_CREATED);
+    }
+
+    public function update(int $id, TemplateUpdateDto $templateUpdateDto): JsonResponse
+    {
+        $this->templateService->update($id, $templateUpdateDto);
+        return $this->success(null, 'Template updated successfully');
     }
 }

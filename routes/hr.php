@@ -43,7 +43,11 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(TemplateController::class)
         ->prefix('templates')
         ->group(function () {
+            Route::get('', 'getTemplatesByCompanyId');
             Route::get('/{id}', 'templateById');
+            Route::post('/store', 'store');
+            Route::patch('/store-questions/{id}', 'storeQuestions');
+            Route::patch('/update/{id}', 'update');
         });
 
     // template category

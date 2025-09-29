@@ -42,6 +42,8 @@ class Handler extends ExceptionHandler
             return $e->render();
         } elseif ($e instanceof BadRequestException) {
             return $e->render();
+        } elseif ($e instanceof ValidationException) {
+            return $this->error($e->errors(), $e->getMessage());
         }
 
         return $this->error([], $e->getMessage());

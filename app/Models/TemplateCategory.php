@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class TemplateCategory extends Model
 {
@@ -23,23 +23,25 @@ class TemplateCategory extends Model
 
     public $timestamps = false;
 
-    public function questions(): BelongsToMany
+    public function questions(): MorphToMany
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             Question::class,
+            'questionable',
             'template_category_questions',
             'template_category_id',
-            'question_id',
+            'questionable_id'
         );
     }
 
     public function customQuestions(): BelongsToMany
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             CustomQuestion::class,
+            'questionable',
             'template_category_questions',
             'template_category_id',
-            'custom_question_id',
+            'questionable_id'
         );
     }
 }

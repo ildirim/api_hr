@@ -2,6 +2,9 @@
 
 namespace App\Http\Repositories\Hr;
 
+use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
+use App\Http\Requests\Admin\Template\TemplateUpdateRequest;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Models\Template;
 
@@ -11,7 +14,7 @@ class TemplateRepository implements TemplateRepositoryInterface
     {
     }
 
-    public function templateById(int $id, int $companyId): ?Template
+    public function getTemplateById(int $id): ?Template
     {
         return $this->template->select('t.id', 't.company_id', 't.job_subcategory_id', 't.language_id', 'jc.id as job_category_id', 't.name', 't.plan_code', 'jct.name as job_category_name', 'jsct.name as job_subcategory_name', 'l.name as language')
             ->from('templates as t')
@@ -21,9 +24,18 @@ class TemplateRepository implements TemplateRepositoryInterface
             ->leftJoin('job_category_translations as jct', 'jct.job_category_id', 'jc.id')
             ->leftJoin('languages as l', 'l.id', 't.language_id')
             ->where('t.id', $id)
-            ->where('t.company_id', $companyId)
             ->whereColumn('jsct.language_id', 't.language_id')
             ->whereColumn('jct.language_id', 't.language_id')
             ->first();
+    }
+
+    public function store(TemplateStoreDto $templateStoreDto): Template
+    {
+        return $this->template->create(TemplateStoreDto::toLower($templateStoreDto->toArray()));
+    }
+
+    public function update(Template $template, TemplateUpdateDto $templateUpdateDto): bool
+    {
+        return $template->update($templateUpdateDto->toArray());
     }
 }

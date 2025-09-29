@@ -2,10 +2,15 @@
 
 namespace App\Interfaces\Hr\Template;
 
+use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Models\Template;
-use Illuminate\Support\Collection;
 
 interface TemplateRepositoryInterface
 {
-    public function templateById(int $id, int $companyId): ?Template;
+    public function getTemplateById(int $id): ?Template;
+
+    public function store(TemplateStoreDto $templateStoreDto): Template;
+
+    public function update(Template $template, TemplateUpdateDto $templateUpdateDto): bool;
 }

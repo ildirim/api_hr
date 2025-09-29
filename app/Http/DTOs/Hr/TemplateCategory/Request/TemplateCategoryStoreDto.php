@@ -7,11 +7,11 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-class TemplateCategoryRequestDto extends Data
+class TemplateCategoryStoreDto extends Data
 {
     public function __construct(
         public int $templateId,
-        public int $questionCategoryId,
+        public ?int $questionCategoryId,
         public int $duration,
         public bool $isGrouped,
     ) {

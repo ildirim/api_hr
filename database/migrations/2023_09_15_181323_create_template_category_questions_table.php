@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('template_category_id');
             $table->unsignedBigInteger('questionable_id')->nullable();
-            $table->string('type');
-            $table->integer('question_order_no')->default(0);
+            $table->string('questionable_type');
+            $table->integer('order_number')->default(0);
 
             $table->foreign('template_category_id')->references('id')->on('template_categories');
         });

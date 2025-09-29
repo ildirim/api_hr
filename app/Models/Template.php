@@ -27,9 +27,4 @@ class Template extends Model
     {
         return $this->hasMany(TemplateCategory::class, 'template_id', 'id');
     }
-
-    public function statuses(): HasMany
-    {
-        return $this->hasMany(TemplateStatus::class, 'template_id', 'id');
-    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\Template;
 
 use App\Http\Requests\BaseRequest;
 use App\Rules\RequiredIfLanguageIsOne;
@@ -22,11 +22,6 @@ class TemplateRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return $this->isMethod('POST') ? $this->postValidation() : $this->putValidation();
-    }
-
-    public function postValidation(): array
-    {
         return [
             'jobSubcategoryId' => 'required|integer|digits_between:1,11|exists:job_subcategories,id',
             'languageId' => 'required|numeric',
@@ -37,20 +32,7 @@ class TemplateRequest extends BaseRequest
         ];
     }
 
-    public function putValidation(): array
-    {
-        return [
-            'jobSubcategoryId' => 'required|integer|digits_between:1,11|exists:job_subcategories,id',
-            'languageId' => 'required|numeric',
-            'planCode' => 'required|integer|digits_between:1,11',
-            'name' => 'between:3,100',
-            'timingCode' => 'integer|digits_between:1,11',
-            'duration' => 'integer|digits_between:1,11',
-        ];
-    }
-
-    public
-    function messages(): array
+    public function messages(): array
     {
         return [
             'jobSubcategoryId.required' => 'Kateqoriya daxil edin',
@@ -76,8 +58,7 @@ class TemplateRequest extends BaseRequest
         ];
     }
 
-    public
-    function filters(): array
+    public function filters(): array
     {
         return [
             'jobSubcategoryId' => 'trim',

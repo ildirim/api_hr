@@ -185,5 +185,6 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('', 'getTemplatesByCompanyId');
             Route::get('/{id}', 'templateById');
             Route::post('/store', 'store');
+            Route::patch('/update/{id}', 'update');
         });
 });

@@ -2,15 +2,9 @@
 
 namespace App\Http\Repositories\Hr;
 
-use App\Http\DTOs\Hr\Question\Request\QuestionMixedRequestDto;
-use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryListRequestDto;
-use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryRequestDto;
-use App\Interfaces\Hr\Question\QuestionRepositoryInterface;
+use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryStoreDto;
 use App\Interfaces\Hr\TemplateCategory\TemplateCategoryRepositoryInterface;
-use App\Models\Question;
 use App\Models\TemplateCategory;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class TemplateCategoryRepository implements TemplateCategoryRepositoryInterface
 {
@@ -18,8 +12,8 @@ class TemplateCategoryRepository implements TemplateCategoryRepositoryInterface
     {
     }
 
-    public function store(TemplateCategoryRequestDto $requestDto): TemplateCategory
+    public function store(TemplateCategoryStoreDto $templateCategoryStoreDto): TemplateCategory
     {
-        return $this->templateCategory->create($requestDto->toArray());
+        return $this->templateCategory->create($templateCategoryStoreDto->toArray());
     }
 }

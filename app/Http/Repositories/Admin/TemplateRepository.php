@@ -2,7 +2,6 @@
 
 namespace App\Http\Repositories\Admin;
 
-use App\Http\DTOs\Admin\Template\Request\TemplateRequestDto;
 use App\Interfaces\Admin\Template\TemplateRepositoryInterface;
 use App\Models\Template;
 use Illuminate\Support\Collection;
@@ -25,10 +24,5 @@ class TemplateRepository implements TemplateRepositoryInterface
             ->where('jsct.language_id', 't.language_id')
             ->where('jct.language_id', 't.language_id')
             ->get();
-    }
-
-    public function store(TemplateRequestDto $request): Template
-    {
-        return $this->template->create($request->toArray());
     }
 }
