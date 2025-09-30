@@ -13,12 +13,8 @@ class TemplateCategory extends Model
 
     protected $fillable = [
         'template_id',
-        'question_category_id',
-        'is_grouped',
         'duration',
-        'status_code',
-        'name',
-        'url',
+        'order_number',
     ];
 
     public $timestamps = false;
@@ -31,7 +27,7 @@ class TemplateCategory extends Model
             'template_category_questions',
             'template_category_id',
             'questionable_id'
-        );
+        )->withPivot(['duration', 'order_number']);
     }
 
     public function customQuestions(): BelongsToMany
@@ -42,6 +38,6 @@ class TemplateCategory extends Model
             'template_category_questions',
             'template_category_id',
             'questionable_id'
-        );
+        )->withPivot(['duration', 'order_number']);
     }
 }

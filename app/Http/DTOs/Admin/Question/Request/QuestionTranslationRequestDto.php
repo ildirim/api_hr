@@ -14,7 +14,6 @@ class QuestionTranslationRequestDto extends Data
         public ?int $id,
         public int $languageId,
         public string $content,
-    )
-    {
+    ) {
     }
 }

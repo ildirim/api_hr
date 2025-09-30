@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('language_id');
             $table->unsignedBigInteger('job_subcategory_id');
-            $table->integer('passing_type_code')->default(0); // ne ile olmalidi. faiz, dogru cavab sayi?
+            $table->integer('passing_type_code');
             $table->integer('passing_score')->default(0); // ne ile olmalidi. faiz, dogru cavab sayi?
             $table->integer('plan_code');
             $table->integer('timing_code')->nullable();
