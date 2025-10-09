@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\QuestionAnswerController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\AnswerController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Admin\PlanTypeController;
 use App\Http\Controllers\TestController;
 
 Route::get('/test', [TestController::class, 'index']);
@@ -186,5 +187,16 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/{id}', 'templateById');
             Route::post('/store', 'store');
             Route::patch('/update/{id}', 'update');
+        });
+
+    //    plan types
+    Route::controller(PlanTypeController::class)
+        ->prefix('plan-types')
+        ->group(function () {
+            Route::get('', 'planTypes');
+            Route::get('/{id}', 'planTypeById');
+            Route::post('/store', 'store');
+            Route::put('/update/{id}', 'update');
+            Route::delete('/delete/{id}', 'destroy');
         });
 });

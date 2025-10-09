@@ -27,10 +27,10 @@ class TemplateStoreDto extends Data
         #[Exists('job_subcategories', 'id')]
         public int $jobSubcategoryId,
         #[Between(1, 11)]
+        #[Exists('plan_types', 'id')]
+        public int $planTypeId,
         #[Exists('languages', 'id')]
         public int $languageId,
-        #[Between(4000, 5000)]
-        public int $planCode,
         #[Min(3)]
         #[Max(100)]
         public string $name,
@@ -55,10 +55,10 @@ class TemplateStoreDto extends Data
             'languageId.integer' => 'Dil rəqəm tipi olmalıdır',
             'languageId.exists' => 'Dil mövcud deyil',
             'languageId.between' => 'Dil maksimal 11 simvol ola bilər',
-            'planCode.required' => 'Plan daxil edin',
-            'planCode.integer' => 'Plan rəqəm tipi olmalıdır',
-            'planCode.exists' => 'Plan mövcud deyil',
-            'planCode.between' => 'Plan kodu düzgün daxil edilməyib',
+            'planTypeId.required' => 'Dil daxil edin',
+            'planTypeId.integer' => 'Dil rəqəm tipi olmalıdır',
+            'planTypeId.exists' => 'Dil mövcud deyil',
+            'planTypeId.between' => 'Dil maksimal 11 simvol ola bilər',
             'name.required' => 'Şablon adı daxil edin',
             'name.string' => 'Şablon adı yazı tipi olmalıdır',
             'name.between' => 'Şablon adı maksimal 100 simvol ola bilər',
