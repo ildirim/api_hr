@@ -18,7 +18,7 @@ class QuestionController extends Controller
 
     public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): JsonResponse
     {
-        $questionCategories = $this->questionService->getShuffledQuestions($shuffledQuestionDto);
-        return $this->success($questionCategories);
+        $questions = $this->questionService->getShuffledQuestions($shuffledQuestionDto);
+        return $this->success($questions);
     }
 }

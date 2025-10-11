@@ -28,7 +28,7 @@ class TemplateService implements TemplateServiceInterface
 
     public function getTemplateById(int $id): ?TemplateByIdResponseDto
     {
-        $template = $this->templateRepository->getTemplateById($id);
+        $template = $this->templateRepository->getTemplateDetailsById($id);
         if (!$template) {
             return null;
         }

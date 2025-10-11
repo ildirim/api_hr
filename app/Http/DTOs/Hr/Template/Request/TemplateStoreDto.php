@@ -3,16 +3,15 @@
 namespace App\Http\DTOs\Hr\Template\Request;
 
 use App\Http\Enums\TemplateStatusEnum;
-use Illuminate\Support\Str;
 use Spatie\LaravelData\Attributes\Computed;
 use Spatie\LaravelData\Attributes\Validation\Between;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
+use App\Http\DTOs\CoreData;
 
-class TemplateStoreDto extends Data
+class TemplateStoreDto extends CoreData
 {
     #[Computed]
     public ?int $adminId = null;
@@ -68,15 +67,5 @@ class TemplateStoreDto extends Data
             'duration.integer' => 'Müddət rəqəm tipi olmalıdır',
             'duration.between' => 'Müddət seçimi  düzgün daxil edilməyib',
         ];
-    }
-
-    public static function toLower(array $payload): array
-    {
-        $normalized = [];
-        foreach ($payload as $key => $value) {
-            $normalized[Str::snake($key)] = $value;
-        }
-
-        return $normalized;
     }
 }

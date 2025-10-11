@@ -17,7 +17,7 @@ class TemplateQuestionDto extends CoreData
 
     public function __construct(
         #[DigitsBetween(8000, 9000)]
-        public int|Optional $passingTypeCode = PassingTypeEnum::CORRECT_QUESTIONS_COUNT->value,
+        public int|Optional $passingTypeCode = PassingTypeEnum::CORRECT_ANSWERS_COUNT->value,
         #[DigitsBetween(8000, 9000)]
         public int|Optional $timingCode = TimingEnum::TEMPLATE_BASE->value,
         #[DigitsBetween(1, 1000)]
