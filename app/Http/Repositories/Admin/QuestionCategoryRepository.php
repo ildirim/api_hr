@@ -58,6 +58,11 @@ class QuestionCategoryRepository implements QuestionCategoryRepositoryInterface
         return QuestionCategoryTranslation::where('id', $id)->update($request);
     }
 
+    public function updateQuestionCategory(int $id, array $request): bool
+    {
+        return QuestionCategoryTranslation::where('id', $id)->update($request);
+    }
+
     public function destroy(int $id): QuestionCategory
     {
         $questionCategory = $this->questionCategory->find($id);

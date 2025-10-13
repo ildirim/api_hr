@@ -8,7 +8,6 @@ use Spatie\LaravelData\Attributes\Validation\Between;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Optional;
 use App\Http\DTOs\CoreData;
 
 class TemplateStoreDto extends CoreData
@@ -25,18 +24,17 @@ class TemplateStoreDto extends CoreData
         #[Between(1, 11)]
         #[Exists('job_subcategories', 'id')]
         public int $jobSubcategoryId,
+
         #[Between(1, 11)]
-        #[Exists('plan_types', 'id')]
-        public int $planTypeId,
+        #[Exists('template_types', 'id')]
+        public int $templateTypeId,
+
         #[Exists('languages', 'id')]
         public int $languageId,
+
         #[Min(3)]
         #[Max(100)]
         public string $name,
-        #[Between(6000, 7000)]
-        public int|Optional $timingCode,
-        #[Between(1, 10000)]
-        public int|Optional $duration,
     ) {
         $admin = auth('admin')->user();
         $this->adminId = $admin->id;

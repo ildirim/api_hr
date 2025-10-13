@@ -2,6 +2,7 @@
 
 namespace App\Interfaces\Admin\TemplateType;
 
+use App\Http\DTOs\Admin\TemplateType\Request\TemplateTypeRequestDto;
 use App\Models\TemplateType;
 use Illuminate\Support\Collection;
 
@@ -11,9 +12,9 @@ interface TemplateTypeRepositoryInterface
 
     public function templateTypeById(int $id): ?TemplateType;
 
-    public function store(array $data): TemplateType;
+    public function store(TemplateTypeRequestDto $request): TemplateType;
 
-    public function update(int $id, array $data): TemplateType;
+    public function update(int $id, TemplateTypeRequestDto $request): TemplateType;
 
     public function destroy(TemplateType $templateType): bool;
 }

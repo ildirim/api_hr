@@ -12,9 +12,9 @@ interface TemplateTypeServiceInterface
 
     public function templateTypeById(int $id): ?TemplateTypeResponseDto;
 
-    public function store(TemplateTypeRequestDto $request): TemplateTypeResponseDto;
+    public function store(TemplateTypeRequestDto $request): void;
 
-    public function update(int $id, TemplateTypeRequestDto $request): TemplateTypeResponseDto;
+    public function update(int $id, TemplateTypeRequestDto $request): void;
 
     public function destroy(int $id): void;
 }

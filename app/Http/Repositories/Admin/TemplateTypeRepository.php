@@ -2,6 +2,7 @@
 
 namespace App\Http\Repositories\Admin;
 
+use App\Http\DTOs\Admin\TemplateType\Request\TemplateTypeRequestDto;
 use App\Interfaces\Admin\TemplateType\TemplateTypeRepositoryInterface;
 use App\Models\TemplateType;
 use Illuminate\Support\Collection;
@@ -22,13 +23,15 @@ class TemplateTypeRepository implements TemplateTypeRepositoryInterface
         return $this->templateType->select('id', 'name')->find($id);
     }
 
-    public function store(array $data): TemplateType
+    public function store(TemplateTypeRequestDto $request): TemplateType
     {
+        $data = TemplateTypeRequestDto::toLower($request->toArray());
         return $this->templateType->create($data);
     }
 
-    public function update(int $id, array $data): TemplateType
+    public function update(int $id, TemplateTypeRequestDto $request): TemplateType
     {
+        $data = TemplateTypeRequestDto::toLower($request->toArray());
         $templateType = $this->templateType->findOrFail($id);
         $templateType->update($data);
         return $templateType;

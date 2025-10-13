@@ -3,9 +3,16 @@
 namespace App\Http\DTOs\Admin\TemplateType\Request;
 
 use App\Http\DTOs\CoreData;
+use App\Http\Enums\ActivationStatusEnum;
+use App\Http\Enums\PassingTypeEnum;
+use App\Http\Enums\TimingEnum;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\Validation\Between;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Optional;
 
 class TemplateTypeRequestDto extends CoreData
@@ -14,20 +21,42 @@ class TemplateTypeRequestDto extends CoreData
         #[Min(3)]
         #[Max(255)]
         public string $name,
-        public string|Optional $description,
+
+        public null|string|Optional $description = null,
+
+        #[Required]
+        #[BooleanType]
         public bool $hasSystemQuestions,
+
         #[Min(0)]
-        public int|Optional $maxSystemQuestionCount,
+        public null|int|Optional $maxSystemQuestionCount = null,
+
+        #[Required]
+        #[BooleanType]
+        public bool $hasCustomQuestions,
+
         #[Min(0)]
-        public int|Optional $maxCustomQuestionCount,
+        public null|int|Optional $maxCustomQuestionCount = null,
+
         #[Between(8001, 8003)]
-        public int $passingTypeCode,
+        public int $passingTypeCode = PassingTypeEnum::ALL->value,
+
         #[Between(6000, 7000)]
-        public int|Optional $timingCode,
-        public bool $hasShuffleQuestions,
+        public int $timingCode = TimingEnum::ALL->value,
+
+        #[Required]
+        #[BooleanType]
+        public bool $hasShuffling,
+
         #[Min(0)]
-        public int|Optional $maxShuffledQuestionCount,
-        public int|Optional $status,
+        public ?int $maxShuffledQuestionCount = null,
+
+        #[Required]
+        #[Between(1000, 2000)]
+        public int $status = ActivationStatusEnum::ACTIVE->value,
+
+        #[DataCollectionOf(QuestionCategoryRequestDto::class)]
+        public DataCollection $questionCategories,
     ) {
     }
 

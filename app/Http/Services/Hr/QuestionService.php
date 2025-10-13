@@ -5,7 +5,6 @@ namespace App\Http\Services\Hr;
 use App\Http\DTOs\Hr\Question\Request\ShuffledQuestionDto;
 use App\Http\DTOs\Hr\Question\Response\QuestionResponseDto;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
-use App\Models\TemplateType;
 use App\Interfaces\Hr\Question\QuestionRepositoryInterface;
 use App\Interfaces\Hr\Question\QuestionServiceInterface;
 use App\Models\Admin;

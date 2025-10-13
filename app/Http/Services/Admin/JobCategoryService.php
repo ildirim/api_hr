@@ -8,7 +8,6 @@ use App\Http\DTOs\Admin\JobCategory\Response\JobCategoryByLocaleResponseDto;
 use App\Interfaces\Admin\JobCategory\JobCategoryRepositoryInterface;
 use App\Interfaces\Admin\JobCategory\JobCategoryServiceInterface;
 use App\Models\JobCategory;
-use App\Models\JobCategoryTranslation;
 use Spatie\LaravelData\DataCollection;
 
 class JobCategoryService implements JobCategoryServiceInterface

@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         ->prefix('templates')
         ->group(function () {
             Route::get('', 'getTemplatesByCompanyId');
-            Route::get('/{id}', 'templateById');
+            Route::get('/{id}', 'getTemplateById');
             Route::post('/store', 'store');
             Route::patch('/store-questions/{id}', 'storeQuestions');
             Route::patch('/update/{id}', 'update');

@@ -11,7 +11,12 @@ class CoreData extends Data
     {
         $normalized = [];
         foreach ($payload as $key => $value) {
-            $normalized[Str::snake($key)] = $value;
+            $snakeKey = Str::snake($key);
+            if (is_array($value)) {
+                $normalized[$snakeKey] = self::toLower($value);
+            } else {
+                $normalized[$snakeKey] = $value;
+            }
         }
 
         return $normalized;

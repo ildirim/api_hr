@@ -9,6 +9,7 @@ use App\Http\DTOs\Hr\Template\Request\TemplateQuestionDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateByIdResponseDto;
+use App\Http\DTOs\Hr\Template\Response\TemplateListResponseDto;
 use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryStoreDto;
 use App\Http\Enums\TemplateStatusEnum;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
@@ -16,6 +17,9 @@ use App\Interfaces\Hr\Template\TemplateServiceInterface;
 use App\Interfaces\Hr\TemplateCategory\TemplateCategoryRepositoryInterface;
 use App\Models\TemplateCategory;
 use Illuminate\Support\Facades\DB;
+use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\PaginatedDataCollection;
+
 
 class TemplateService implements TemplateServiceInterface
 {
@@ -24,6 +28,12 @@ class TemplateService implements TemplateServiceInterface
         protected TemplateCategoryRepositoryInterface $templateCategoryRepository,
     )
     {
+    }
+
+    public function getTemplatesByCompanyId($companyId): ?PaginatedDataCollection
+    {
+        $templates = $this->templateRepository->getTemplatesByCompanyId($companyId);
+        return TemplateListResponseDto::collection($templates);
     }
 
     public function getTemplateById(int $id): ?TemplateByIdResponseDto
@@ -47,7 +57,9 @@ class TemplateService implements TemplateServiceInterface
             if (!$template) {
                 throw new NotFoundException();
             }
-
+            if ($template->status > TemplateStatusEnum::INCOMPLETED_STEP1->value) {
+                throw new BadRequestException('Stage is wrong');
+            }
             foreach ($templateQuestionDto->templateCategories as $templateCategoryDto) {
                 $templateCategory = $this->storeTemplateCategory($id, $templateCategoryDto);
 

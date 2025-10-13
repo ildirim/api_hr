@@ -17,10 +17,11 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('has_system_questions')->default(false);
             $table->integer('max_system_question_count')->default(0);
+            $table->boolean('has_custom_questions')->default(false);
             $table->integer('max_custom_question_count')->default(0);
             $table->integer('passing_type_code');
             $table->integer('timing_code')->nullable();
-            $table->boolean('has_shuffle_questions')->default(false);
+            $table->boolean('has_shuffling')->default(false);
             $table->boolean('max_shuffled_question_count')->default(0);
             $table->integer('status');
             $table->timestamps();

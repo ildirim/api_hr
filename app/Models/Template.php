@@ -19,6 +19,7 @@ class Template extends Model
         'plan_type_id',
         'duration',
         'timing_code',
+        'passing_type_code',
         'name',
         'url',
         'status',

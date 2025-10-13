@@ -32,14 +32,14 @@ class TemplateTypeController extends Controller
 
     public function store(TemplateTypeRequestDto $request): JsonResponse
     {
-        $templateType = $this->templateTypeService->store($request);
-        return $this->success($templateType, 'Template type created successfully', 'success', Response::HTTP_CREATED);
+         $this->templateTypeService->store($request);
+        return $this->success(null, 'Template type created successfully', 'success', Response::HTTP_CREATED);
     }
 
     public function update(int $id, TemplateTypeRequestDto $request): JsonResponse
     {
-        $templateType = $this->templateTypeService->update($id, $request);
-        return $this->success($templateType);
+        $this->templateTypeService->update($id, $request);
+        return $this->success(null, 'Template type updated successfully');
     }
 
     public function destroy(int $id): JsonResponse
