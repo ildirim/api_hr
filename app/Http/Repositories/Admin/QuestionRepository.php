@@ -19,7 +19,7 @@ class QuestionRepository implements QuestionRepositoryInterface
     public function questions(QuestionSelectRequestDto $questionSelectRequestDto): Collection
     {
 
-        $lang = request()->header('lang') ?? 1;
+        $lang = request()->header('Accept-Language') ?? 1;
         return $this->question->with([
             'translations' => function ($query) {
                 $query->select('id', 'question_id', 'language_id', 'content');

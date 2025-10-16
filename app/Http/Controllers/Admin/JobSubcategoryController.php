@@ -27,7 +27,7 @@ class JobSubcategoryController extends Controller
 
     public function jobSubcategoriesByJobCategoryIdAndLocale(int $jobCategoryId, Request $request): JsonResponse
     {
-        $jobSubcategories = $this->jobSubcategoryService->jobSubcategoriesByJobCategoryIdAndLocale($jobCategoryId, $request->header('lang'));
+        $jobSubcategories = $this->jobSubcategoryService->jobSubcategoriesByJobCategoryIdAndLocale($jobCategoryId, $request->header('Accept-Language'));
         return $this->success($jobSubcategories);
     }
 

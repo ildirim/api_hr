@@ -13,7 +13,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class ShuffledQuestionDto extends Data
 {
     #[Computed]
-    public int $companyId;
+    public null|int $companyId;
 
     #[Computed]
     public int $languageId;
@@ -21,8 +21,8 @@ class ShuffledQuestionDto extends Data
     public function __construct(
         public null|int $questionsCount,
         #[Exists('templates', 'id')]
-        public int $templateId,
+        public null|int $templateId,
     ) {
-        $this->languageId = request()->get('lang') ?? LanguageEnum::ENGLISH->value;
+        $this->languageId = request()->get('Accept-Language') ?? LanguageEnum::ENGLISH->value;
     }
 }
