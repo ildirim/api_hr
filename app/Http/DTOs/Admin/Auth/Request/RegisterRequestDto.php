@@ -11,8 +11,6 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapName(SnakeCaseMapper::class)]
 class RegisterRequestDto extends Data
 {
-    #[Computed]
-    public int $roleId;
 
     #[Computed]
     public int $status;
@@ -23,8 +21,8 @@ class RegisterRequestDto extends Data
         public string $email,
         public string $phone,
         public null|string $password = null,
+        public int $roleId = 1,
     ) {
-        $this->roleId = 1;
         $this->status = AdminStatusEnum::PENDING->value;
     }
 }
