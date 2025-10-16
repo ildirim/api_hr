@@ -14,7 +14,7 @@ interface AnswerServiceInterface
 
     public function store(AnswerRequestDto $request, ?int $questionId): Answer;
 
-    public function update(int $id, AnswerRequestDto $request): Answer;
+    public function update(int $id, AnswerRequestDto $requestDto): Answer;
 
     public function destroy(int $id): JsonResource;
 }

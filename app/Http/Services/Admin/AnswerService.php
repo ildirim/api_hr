@@ -45,13 +45,8 @@ class AnswerService implements AnswerServiceInterface
     public function updateTranslation(Answer $answer, AnswerRequestDto $request): void
     {
         $answerTranslationRequest = $request->toArray()['translations'];
-        foreach ($answerTranslationRequest as $answerTranslation) {
-            if (isset($answerTranslation['id'])) {
-                $this->answerRepository->updateTranslations($answerTranslation['id'], $answerTranslation);
-            } else {
-                $answer->translations()->create($answerTranslation);
-            }
-        }
+        $answer->translations()->delete();
+        $answer->translations()->createMany($answerTranslationRequest);
     }
 
     public function destroy(int $id): JsonResource

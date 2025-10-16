@@ -49,13 +49,8 @@ class JobCategoryService implements JobCategoryServiceInterface
     public function updateTranslation(JobCategory $jobCategory, JobCategoryRequestDto $request): void
     {
         $jobCategoryTranslationRequest = $request->toArray()['translations'];
-        foreach ($jobCategoryTranslationRequest as $jobCategoryTranslation) {
-            if (isset($jobCategoryTranslation['id'])) {
-                $this->jobCategoryRepository->updateTranslations($jobCategoryTranslation['id'], $jobCategoryTranslation);
-            } else {
-                $jobCategory->translations()->create($jobCategoryTranslation);
-            }
-        }
+        $jobCategory->translations()->delete();
+        $jobCategory->translations()->createMany($jobCategoryTranslationRequest);
     }
 
     public function destroy(int $id): JobCategoryResponseDto

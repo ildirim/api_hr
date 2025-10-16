@@ -52,13 +52,8 @@ class JobSubcategoryService implements JobSubcategoryServiceInterface
     public function updateTranslation(JobSubcategory $jobSubcategory, JobSubcategoryRequestDto $request): void
     {
         $jobSubcategoryTranslationRequest = $request->toArray()['translations'];
-        foreach ($jobSubcategoryTranslationRequest as $jobSubcategoryTranslation) {
-            if (isset($jobSubcategoryTranslation['id'])) {
-                $this->jobSubcategoryRepository->updateTranslations($jobSubcategoryTranslation['id'], $jobSubcategoryTranslation);
-            } else {
-                $jobSubcategory->translations()->create($jobSubcategoryTranslation);
-            }
-        }
+        $jobSubcategory->translations()->delete();
+        $jobSubcategory->translations()->createMany($jobSubcategoryTranslationRequest);
     }
 
     public function destroy(int $id): JobSubcategoryResponseDto

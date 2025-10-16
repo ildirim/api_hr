@@ -44,13 +44,8 @@ class QuestionService implements QuestionServiceInterface
     public function updateTranslation(Question $question, QuestionRequestDto $requestDto): void
     {
         $questionTranslationRequest = $requestDto->toArray()['translations'];
-        foreach ($questionTranslationRequest as $questionTranslation) {
-            if (isset($questionTranslation['id'])) {
-                $this->questionRepository->updateTranslations($questionTranslation['id'], $questionTranslation);
-            } else {
-                $question->translations()->create($questionTranslation);
-            }
-        }
+        $question->translations()->delete();
+        $question->translations()->createMany($questionTranslationRequest);
     }
 
     public function destroy(int $id): Question

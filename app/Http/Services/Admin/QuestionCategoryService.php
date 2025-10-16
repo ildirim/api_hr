@@ -43,13 +43,8 @@ class QuestionCategoryService implements QuestionCategoryServiceInterface
     public function updateTranslation(QuestionCategory $questionCategory, QuestionCategoryRequestDto $request): void
     {
         $questionCategoryTranslationRequest = $request->toArray()['translations'];
-        foreach ($questionCategoryTranslationRequest as $questionCategoryTranslation) {
-            if (isset($questionCategoryTranslation['id'])) {
-                $this->questionCategoryRepository->updateTranslations($questionCategoryTranslation['id'], $questionCategoryTranslation);
-            } else {
-                $questionCategory->translations()->create($questionCategoryTranslation);
-            }
-        }
+        $questionCategory->translations()->delete();
+        $questionCategory->translations()->createMany($questionCategoryTranslationRequest);
     }
 
     public function destroy(int $id): QuestionCategoryResponseDto
