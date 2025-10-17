@@ -19,9 +19,9 @@ class JobCategoryRepository implements JobCategoryRepositoryInterface
     {
         $language = CommonHelper::getLanguage();
         return $this->jobCategory
-            ->select('q.id', 'q.period', 'q.question_level', 'qt.content')
+            ->select('jc.id', 'jct.name')
             ->from('job_categories as jc')
-            ->join('job_category_translations jct', 'jct.job_category_id', 'jc.id')
+            ->join('job_category_translations as jct', 'jct.job_category_id', 'jc.id')
             ->where('jct.language_id', $language)
             ->get();
     }
