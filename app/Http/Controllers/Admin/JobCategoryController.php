@@ -25,9 +25,9 @@ class JobCategoryController extends Controller
         return $this->success($jobCategories);
     }
 
-    public function jobCategoriesByLocale(Request $request): JsonResponse
+    public function jobCategoriesByLocale(): JsonResponse
     {
-        $jobCategories = $this->jobCategoryService->jobCategoriesByLocale($request->header('Accept-Language'));
+        $jobCategories = $this->jobCategoryService->jobCategoriesByLocale();
         return $this->success($jobCategories);
     }
 

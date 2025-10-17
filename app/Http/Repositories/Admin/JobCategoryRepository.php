@@ -25,15 +25,6 @@ class JobCategoryRepository implements JobCategoryRepositoryInterface
             ->get();
     }
 
-    public function jobCategoriesByLocale(?string $locale): Collection
-    {
-        return $this->jobCategory->select('job_categories.id', 'jct.id as job_category_id', 'jct.language_id', 'jct.name')
-            ->join('job_category_translations as jct', 'jct.job_category_id', 'job_categories.id')
-            ->join('languages as l', 'l.id', 'jct.language_id')
-            ->where('l.locale', $locale ?? LanguageEnum::ENGLISH->value)
-            ->get();
-    }
-
     public function jobCategoryById(int $id): ?JobCategory
     {
         return $this->jobCategory->with(['translations' => function ($query) {

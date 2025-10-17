@@ -119,7 +119,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(JobCategoryController::class)
         ->prefix('job-categories')
         ->group(function () {
-            Route::get('', 'jobCategoriesByLocale');
+            Route::get('', 'jobCategories');
             Route::get('/{id}', 'jobCategoryById');
             Route::post('/store', 'store');
             Route::put('/update/{id}', 'update');

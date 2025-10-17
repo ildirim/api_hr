@@ -21,9 +21,9 @@ class JobCategoryService implements JobCategoryServiceInterface
         return JobCategoryResponseDto::collection($this->jobCategoryRepository->jobCategories());
     }
 
-    public function jobCategoriesByLocale(?string $locale): DataCollection
+    public function jobCategoriesByLocale(): DataCollection
     {
-        return JobCategoryByLocaleResponseDto::collection($this->jobCategoryRepository->jobCategoriesByLocale($locale));
+        return JobCategoryByLocaleResponseDto::collection($this->jobCategoryRepository->jobCategoriesByLocale());
     }
 
     public function jobCategoryById(int $id): JobCategoryResponseDto
