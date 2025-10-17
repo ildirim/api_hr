@@ -16,4 +16,13 @@ enum LanguageEnum: int
             default => null
         };
     }
+
+    public static function getIdByLabel(?string $label): ?string {
+        return match ($label) {
+            'en' => LanguageEnum::ENGLISH->value,
+            'az' => LanguageEnum::AZERBAIJAN->value,
+            'ru' => LanguageEnum::RUSSIAN->value,
+            default => null
+        };
+    }
 }
