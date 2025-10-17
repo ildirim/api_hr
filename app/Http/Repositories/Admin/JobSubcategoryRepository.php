@@ -25,13 +25,12 @@ class JobSubcategoryRepository implements JobSubcategoryRepositoryInterface
             ->get();
     }
 
-    public function jobSubcategoriesByJobCategoryIdAndLocale(int $jobCategoryId, ?string $locale): Collection
+    public function getJobSubcategoriesByJobCategoryId(int $jobCategoryId): Collection
     {
         return $this->jobSubcategory->select('job_subcategories.id', 'jsct.id as job_subcategory_id', 'jsct.language_id', 'jsct.name')
             ->join('job_subcategory_translations as jsct', 'jsct.job_subcategory_id', 'job_subcategories.id')
             ->join('languages as l', 'l.id', 'jsct.language_id')
             ->where('job_subcategories.job_category_id', $jobCategoryId)
-            ->where('l.locale', $locale ?? LanguageEnum::ENGLISH->value)
             ->get();
     }
 

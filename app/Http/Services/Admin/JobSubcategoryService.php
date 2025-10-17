@@ -22,10 +22,10 @@ class JobSubcategoryService implements JobSubcategoryServiceInterface
         return JobSubcategoryResponseDto::collection($this->jobSubcategoryRepository->jobSubcategories());
     }
 
-    public function jobSubcategoriesByJobCategoryIdAndLocale(int $jobCategoryId, ?string $locale): DataCollection
+    public function getJobSubcategoriesByJobCategoryId(int $jobCategoryId): DataCollection
     {
         return JobSubcategoryByLocaleResponseDto::collection(
-            $this->jobSubcategoryRepository->jobSubcategoriesByJobCategoryIdAndLocale($jobCategoryId, $locale)
+            $this->jobSubcategoryRepository->getJobSubcategoriesByJobCategoryId($jobCategoryId)
         );
     }
 
