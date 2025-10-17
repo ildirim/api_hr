@@ -6,5 +6,5 @@ use Spatie\LaravelData\DataCollection;
 
 interface JobCategoryServiceInterface
 {
-    public function jobCategories(string $lang): DataCollection;
+    public function getJobCategories(): DataCollection;
 }

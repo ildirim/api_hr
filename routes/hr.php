@@ -13,7 +13,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(JobCategoryController::class)
         ->prefix('job-categories')
         ->group(function () {
-            Route::get('', 'jobCategories');
+            Route::get('', 'getJobCategories');
         });
 
     // questions

@@ -6,5 +6,5 @@ use Illuminate\Support\Collection;
 
 interface JobCategoryRepositoryInterface
 {
-    public function jobCategories(string $lang): Collection;
+    public function getJobCategories(): Collection;
 }

@@ -18,10 +18,9 @@ class JobCategoryController extends Controller
     {
     }
 
-    public function jobCategories(Request $request): JsonResponse
+    public function getJobCategories(): JsonResponse
     {
-        $lang = $request->getPreferredLanguage() ?? LanguageEnum::ENGLISH->value;
-        $jobCategories = $this->jobCategoryService->jobCategories($lang);
+        $jobCategories = $this->jobCategoryService->getJobCategories();
         return $this->success($jobCategories);
     }
 

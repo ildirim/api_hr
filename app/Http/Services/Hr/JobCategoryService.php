@@ -13,8 +13,8 @@ class JobCategoryService implements JobCategoryServiceInterface
     {
     }
 
-    public function jobCategories(string $lang): DataCollection
+    public function getJobCategories(): DataCollection
     {
-        return JobCategoryResponseDto::collection($this->questionRepository->jobCategories($lang));
+        return JobCategoryResponseDto::collection($this->questionRepository->getJobCategories());
     }
 }
