@@ -3,11 +3,9 @@
 namespace App\Http\Repositories\Hr;
 
 use App\Helpers\CommonHelper;
-use App\Http\Enums\LanguageEnum;
 use App\Interfaces\Hr\JobCategory\JobCategoryRepositoryInterface;
 use App\Models\JobCategory;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class JobCategoryRepository implements JobCategoryRepositoryInterface
 {

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Hr\JobCategoryController;
+use App\Http\Controllers\Hr\JobSubcategoryController;
 use App\Http\Controllers\Hr\QuestionController;
 use App\Http\Controllers\Hr\CustomQuestionAnswerController;
 use App\Http\Controllers\Hr\CustomQuestionController;
@@ -14,6 +15,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         ->prefix('job-categories')
         ->group(function () {
             Route::get('', 'getJobCategories');
+            Route::get('{jobCategoryId}/job-subcategories', [JobSubcategoryController::class, 'getJobSubcategoriesByCategoryId']);
         });
 
     // questions
