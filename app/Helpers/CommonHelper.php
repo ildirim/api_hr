@@ -8,7 +8,7 @@ class CommonHelper
 {
     public static function getLanguage(): string
     {
-            return request()->get('Accept-Language')
-                ?? LanguageEnum::getLabelById(LanguageEnum::ENGLISH->value);
+            return LanguageEnum::getIdByLabel(request()->get('Accept-Language'))
+                ?? LanguageEnum::ENGLISH->value;
     }
 }
