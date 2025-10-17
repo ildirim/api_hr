@@ -127,7 +127,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         });
 
     //    job subcategories
-    Route::get('job-categories/{jobCategoryId}/job-subcategories', [JobSubCategoryController::class, 'jobSubcategoriesByJobCategoryIdAndLocale']);
+    Route::get('job-categories/{jobCategoryId}/job-subcategories', [JobSubCategoryController::class, 'getJobSubcategoriesByJobCategoryId']);
     Route::controller(JobSubCategoryController::class)
         ->prefix('job-subcategories')
         ->group(function () {
