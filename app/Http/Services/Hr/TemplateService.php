@@ -45,9 +45,9 @@ class TemplateService implements TemplateServiceInterface
         return TemplateByIdResponseDto::from($template);
     }
 
-    public function store(TemplateStoreDto $templateStoreDto): void
+    public function store(TemplateStoreDto $templateStoreDto): TemplateByIdResponseDto
     {
-        $this->templateRepository->store($templateStoreDto);
+        return TemplateByIdResponseDto::from($this->templateRepository->store($templateStoreDto));
     }
 
     public function storeQuestions(int $id, TemplateQuestionDto $templateQuestionDto): void

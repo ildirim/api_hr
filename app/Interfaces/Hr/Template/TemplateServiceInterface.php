@@ -13,7 +13,7 @@ interface TemplateServiceInterface
 
     public function getTemplateById(int $id): ?TemplateByIdResponseDto;
 
-    public function store(TemplateStoreDto $templateStoreDto): void;
+    public function store(TemplateStoreDto $templateStoreDto): TemplateByIdResponseDto;
 
     public function update(int $id, TemplateUpdateDto $templateUpdateDto): void;
 }

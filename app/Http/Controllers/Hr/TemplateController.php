@@ -33,8 +33,8 @@ class TemplateController extends Controller
 
     public function store(TemplateStoreDto $templateStoreDto): JsonResponse
     {
-        $this->templateService->store($templateStoreDto);
-        return $this->success(null, 'Template created successfully', 'success', Response::HTTP_CREATED);
+        $template = $this->templateService->store($templateStoreDto);
+        return $this->success($template, 'Template created successfully', 'success', Response::HTTP_CREATED);
     }
 
     public function storeQuestions(int $id, TemplateQuestionDto $templateQuestionDto): JsonResponse
