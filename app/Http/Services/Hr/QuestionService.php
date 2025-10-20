@@ -8,7 +8,7 @@ use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Question\QuestionRepositoryInterface;
 use App\Interfaces\Hr\Question\QuestionServiceInterface;
 use App\Models\Admin;
-use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\PaginatedDataCollection;
 
 class QuestionService implements QuestionServiceInterface
 {
@@ -19,7 +19,7 @@ class QuestionService implements QuestionServiceInterface
     {
     }
 
-    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): DataCollection
+    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): array|PaginatedDataCollection
     {
         /** @var $admin Admin */
         $admin = auth('admin')->user();
@@ -27,8 +27,8 @@ class QuestionService implements QuestionServiceInterface
         $shuffledQuestionDto->companyId = $admin->company_id;
 
         $templateType = $this->templateRepository->getTemplateTypeByTemplateId($shuffledQuestionDto->templateId);
-        if (!$templateType || !$templateType->has_shuffle_questions) {
-            return QuestionResponseDto::collection(collect());
+        if (!$templateType || !$templateType->has_shuffling) {
+            return [];
         }
         $shuffledQuestionDto->questionsCount = $shuffledQuestionDto->questionsCount ?? $templateType->max_shuffled_question_count;
         $questions = $this->questionRepository->getShuffledQuestions($shuffledQuestionDto);

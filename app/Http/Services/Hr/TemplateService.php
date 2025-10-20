@@ -17,7 +17,6 @@ use App\Interfaces\Hr\Template\TemplateServiceInterface;
 use App\Interfaces\Hr\TemplateCategory\TemplateCategoryRepositoryInterface;
 use App\Models\TemplateCategory;
 use Illuminate\Support\Facades\DB;
-use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\PaginatedDataCollection;
 
 
@@ -78,6 +77,7 @@ class TemplateService implements TemplateServiceInterface
     {
         $templateCategoryStoreDto = TemplateCategoryStoreDto::from([
             'templateId' => $templateId,
+            'questionCategoryId' => $templateCategoryDto->questionCategoryId,
             'duration' => $templateCategoryDto?->duration,
             'orderNumber' => $templateCategoryDto->orderNumber,
         ]);

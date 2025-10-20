@@ -13,6 +13,7 @@ class TemplateCategory extends Model
 
     protected $fillable = [
         'template_id',
+        'question_category_id',
         'duration',
         'order_number',
     ];

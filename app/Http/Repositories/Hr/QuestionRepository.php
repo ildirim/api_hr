@@ -23,7 +23,7 @@ class QuestionRepository implements QuestionRepositoryInterface
                     ->where('at.language_id', $shuffledQuestionDto->languageId);
             }
         ])
-            ->select('q.id', 'q.period', 'q.question_level', 'qt.content')
+            ->select('q.id', 'q.question_category_id', 'q.period', 'q.question_level', 'qt.content')
             ->from('questions as q')
             ->join('question_translations as qt', 'qt.question_id', 'q.id')
 //            ->where('q.job_subcategory_id', $shuffledQuestionDto->jobSubcategoryId)
@@ -31,8 +31,9 @@ class QuestionRepository implements QuestionRepositoryInterface
             ->whereNotExists(function ($query) use ($shuffledQuestionDto) {
                 $query->select(DB::raw(1))
                     ->from('template_category_questions as tcq')
-                    ->where('tcq.question_id', '!=', 'q.id')
-                    ->where('tcq.company_id', '!=', $shuffledQuestionDto->companyId);
+                    ->where('tcq.questionable_id', '!=', 'q.id')
+//                    ->where('tcq.company_id', '!=', $shuffledQuestionDto->companyId)
+                ;
             })
             ->inRandomOrder()
             ->paginate($shuffledQuestionDto->questionsCount);

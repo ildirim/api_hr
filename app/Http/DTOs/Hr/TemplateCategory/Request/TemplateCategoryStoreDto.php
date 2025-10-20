@@ -11,6 +11,7 @@ class TemplateCategoryStoreDto extends Data
 {
     public function __construct(
         public int $templateId,
+        public int $questionCategoryId,
         public int $duration,
         public int $orderNumber,
     ) {

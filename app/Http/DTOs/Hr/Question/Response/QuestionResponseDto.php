@@ -14,6 +14,7 @@ class QuestionResponseDto extends Data
 {
     public function __construct(
         public int $id,
+        public int $question_category_id,
         public int $question_level,
         public string $period,
         public string $content,

@@ -20,5 +20,3 @@ class JobSubcategoryService implements JobSubcategoryServiceInterface
         );
     }
 }
-
-

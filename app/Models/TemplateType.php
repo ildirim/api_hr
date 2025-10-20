@@ -20,7 +20,6 @@ class TemplateType extends Model
         'passing_type_code',
         'timing_code',
         'has_shuffling',
-        'has_shuffle_questions',
         'max_shuffled_question_count',
         'status',
     ];
@@ -37,6 +36,3 @@ class TemplateType extends Model
             ->withTimestamps();
     }
 }
-
-
-

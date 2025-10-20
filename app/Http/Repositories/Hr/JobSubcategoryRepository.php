@@ -25,5 +25,3 @@ class JobSubcategoryRepository implements JobSubcategoryRepositoryInterface
             ->get();
     }
 }
-
-
