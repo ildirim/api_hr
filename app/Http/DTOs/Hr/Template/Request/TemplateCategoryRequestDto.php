@@ -15,7 +15,7 @@ class TemplateCategoryRequestDto extends CoreData
         #[DataCollectionOf(QuestionAndOrderRequestDto::class)]
         public DataCollection $questions,
         #[Exists('question_categories', 'id')]
-        public Optional|null|int $questionCategoryId = null,
+        public null|int $questionCategoryId = null,
         #[DigitsBetween(1, 10000)]
         public int|Optional $duration = 0,
         public int|Optional $orderNumber = 0,
