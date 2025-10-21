@@ -24,7 +24,7 @@ class CustomQuestionRequestDto extends CoreData
     public int $type = QuestionTypeEnum::SINGLE_CHOICE->value;
 
     public function __construct(
-        #[Required, IntegerType, Between(1, 11), Exists('templates', 'id')]
+        #[Required, IntegerType, Exists('templates', 'id')]
         public int $templateId,
 
         #[Required, Numeric, Exists('languages', 'id')]
