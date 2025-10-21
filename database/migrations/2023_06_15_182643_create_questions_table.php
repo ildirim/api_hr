@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('question_category_id');
             $table->tinyInteger('question_level');
             $table->integer('duration')->default(0);
-            $table->enum('type', array_map(fn($case) => $case->value, \App\Http\Enums\QuestionTypeEnum::cases()));
+            $table->integer('type');
             $table->timestamps();
 
             $table->foreign('job_subcategory_id')->references('id')->on('job_subcategories');

@@ -14,6 +14,6 @@ class CustomAnswer extends Model
     protected $fillable = [
         'custom_question_id',
         'is_correct',
-        'name',
+        'answer_text',
     ];
 }

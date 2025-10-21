@@ -2,10 +2,13 @@
 
 namespace App\Http\Services\Hr;
 
+use App\Http\DTOs\Hr\CustomQuestion\Request\CustomAnswerDto;
 use App\Http\DTOs\Hr\CustomQuestion\Request\CustomQuestionRequestDto;
+use App\Http\Requests\Hr\CustomQuestionAnswerRequest;
 use App\Interfaces\Hr\CustomAnswer\CustomAnswerServiceInterface;
 use App\Interfaces\Hr\CustomQuestion\CustomQuestionServiceInterface;
 use App\Interfaces\Hr\CustomQuestionAnswer\CustomQuestionAnswerServiceInterface;
+use App\Models\CustomQuestion;
 use Illuminate\Support\Facades\DB;
 
 class CustomQuestionAnswerService implements CustomQuestionAnswerServiceInterface
@@ -17,16 +20,14 @@ class CustomQuestionAnswerService implements CustomQuestionAnswerServiceInterfac
     {
     }
 
-    public function store(CustomQuestionRequestDto $requestDto, array $customAnswers): int
+    public function store(CustomQuestionRequestDto $request): CustomQuestion
     {
         DB::beginTransaction();
         try {
-            $customQuestion = $this->customQuestionService->store($requestDto);
-            foreach ($customAnswers as $answerDto) {
-                $this->customAnswerService->store($answerDto, $customQuestion->id);
-            }
+            $customQuestion = $this->customQuestionService->store($request);
+            $customQuestion->answers()->createMany(CustomAnswerDto::toLower($request->answers->toArray()));
             DB::commit();
-            return $customQuestion->id;
+            return $customQuestion;
         } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
@@ -35,19 +36,16 @@ class CustomQuestionAnswerService implements CustomQuestionAnswerServiceInterfac
 
     public function update(
         int $id,
-        CustomQuestionRequestDto $requestDto,
-        array $customAnswers,
-    ): bool
+        CustomQuestionRequestDto $request
+    ): CustomQuestion
     {
         DB::beginTransaction();
         try {
-            $customQuestion = $this->customQuestionService->update($id, $requestDto);
+            $customQuestion = $this->customQuestionService->update($id, $request);
             $customQuestion->answers()->delete();
-            foreach ($customAnswers as $answerDto) {
-                $this->customAnswerService->store($answerDto, $customQuestion->id);
-            }
+            $customQuestion->answers()->createMany($request->answers->toArray());
             DB::commit();
-            return true;
+            return $customQuestion;
         } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());

@@ -3,18 +3,16 @@
 namespace App\Interfaces\Hr\CustomQuestionAnswer;
 
 use App\Http\DTOs\Hr\CustomQuestion\Request\CustomQuestionRequestDto;
-use App\Http\DTOs\Hr\CustomQuestion\Response\CustomQuestionResponseDto;
+use App\Models\CustomQuestion;
 
 interface CustomQuestionAnswerServiceInterface
 {
     public function store(
-        CustomQuestionRequestDto $requestDto,
-        array $customAnswers,
-    ): int;
+        CustomQuestionRequestDto $request
+    ): CustomQuestion;
 
     public function update(
         int $id,
-        CustomQuestionRequestDto $requestDto,
-        array $customAnswers,
-    ): bool;
+        CustomQuestionRequestDto $request,
+    ): CustomQuestion;
 }

@@ -27,9 +27,9 @@ class CustomQuestionService implements CustomQuestionServiceInterface
         return CustomQuestionResponseDto::from($customQuestions);
     }
 
-    public function store(CustomQuestionRequestDto $requestDto): CustomQuestion
+    public function store(CustomQuestionRequestDto $request): CustomQuestion
     {
-        return $this->customQuestionRepository->store($requestDto);
+        return $this->customQuestionRepository->store($request);
     }
 
     public function update(int $id, CustomQuestionRequestDto $requestDto): CustomQuestion

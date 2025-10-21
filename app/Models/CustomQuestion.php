@@ -16,6 +16,7 @@ class CustomQuestion extends Model
         'template_id',
         'language_id',
         'content',
+        'type',
     ];
 
     public function answers(): HasMany

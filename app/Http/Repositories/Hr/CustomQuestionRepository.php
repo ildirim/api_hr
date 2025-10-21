@@ -26,7 +26,7 @@ class CustomQuestionRepository implements CustomQuestionRepositoryInterface
 
     public function store(CustomQuestionRequestDto $requestDto): CustomQuestion
     {
-        return $this->customQuestion->create($requestDto->toArray());
+        return $this->customQuestion->create(CustomQuestionRequestDto::toLower($requestDto->toArray()));
     }
 
     public function update(int $id, CustomQuestionRequestDto $requestDto): CustomQuestion
