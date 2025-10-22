@@ -14,6 +14,7 @@ class Template extends Model
     protected $fillable = [
         'admin_id',
         'company_id',
+        'template_type_id',
         'language_id',
         'job_subcategory_id',
         'plan_type_id',
