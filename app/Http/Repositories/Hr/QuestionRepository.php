@@ -5,7 +5,7 @@ namespace App\Http\Repositories\Hr;
 use App\Http\DTOs\Hr\Question\Request\ShuffledQuestionDto;
 use App\Interfaces\Hr\Question\QuestionRepositoryInterface;
 use App\Models\Question;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class QuestionRepository implements QuestionRepositoryInterface
@@ -14,7 +14,7 @@ class QuestionRepository implements QuestionRepositoryInterface
     {
     }
 
-    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): ?LengthAwarePaginator
+    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): ?Collection
     {
         return $this->question->with([
             'answers' => function ($query) use ($shuffledQuestionDto) {
@@ -36,6 +36,7 @@ class QuestionRepository implements QuestionRepositoryInterface
                 ;
             })
             ->inRandomOrder()
-            ->paginate($shuffledQuestionDto->questionsCount);
+            ->limit($shuffledQuestionDto->questionsCount)
+            ->get();
     }
 }

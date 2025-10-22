@@ -8,7 +8,7 @@ use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Question\QuestionRepositoryInterface;
 use App\Interfaces\Hr\Question\QuestionServiceInterface;
 use App\Models\Admin;
-use Spatie\LaravelData\PaginatedDataCollection;
+use Spatie\LaravelData\DataCollection;
 
 class QuestionService implements QuestionServiceInterface
 {
@@ -19,7 +19,7 @@ class QuestionService implements QuestionServiceInterface
     {
     }
 
-    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): array|PaginatedDataCollection
+    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): array|DataCollection
     {
         /** @var $admin Admin */
         $admin = auth('admin')->user();
