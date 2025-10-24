@@ -21,3 +21,4 @@ class JobSubcategoryController extends Controller
         return $this->success($subcategories);
     }
 }
+

@@ -23,7 +23,6 @@ use App\Http\Controllers\TestController;
 Route::get('/test', [TestController::class, 'index']);
 Route::controller(AuthController::class)
     ->group(function () {
-        Route::get('profile', 'profile')->middleware(['auth:admin']);
         Route::post('login', 'login');
         Route::get('login/google', 'loginWithGoogle');
         Route::post('register', 'register');
@@ -41,6 +40,11 @@ Route::controller(PasswordResetController::class)
     });
 
 Route::group(['middleware' => ['auth:admin']], function () {
+    Route::controller(AuthController::class)
+        ->group(function () {
+            Route::get('profile', 'profile')->middleware(['auth:admin']);
+        });
+
     //    admins
     Route::controller(AdminController::class)
         ->prefix('admins')

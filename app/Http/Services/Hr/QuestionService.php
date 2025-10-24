@@ -4,6 +4,7 @@ namespace App\Http\Services\Hr;
 
 use App\Http\DTOs\Hr\Question\Request\ShuffledQuestionDto;
 use App\Http\DTOs\Hr\Question\Response\QuestionResponseDto;
+use App\Http\DTOs\Hr\Question\Response\ShuffledQuestionCategoryResponseDto;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Question\QuestionRepositoryInterface;
 use App\Interfaces\Hr\Question\QuestionServiceInterface;
@@ -19,7 +20,7 @@ class QuestionService implements QuestionServiceInterface
     {
     }
 
-    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): array|DataCollection
+    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): DataCollection
     {
         /** @var $admin Admin */
         $admin = auth('admin')->user();
@@ -27,11 +28,40 @@ class QuestionService implements QuestionServiceInterface
         $shuffledQuestionDto->companyId = $admin->company_id;
 
         $templateType = $this->templateRepository->getTemplateTypeByTemplateId($shuffledQuestionDto->templateId);
-        if (!$templateType || !$templateType->has_shuffling) {
-            return [];
-        }
+//        if (!$templateType || !$templateType->has_shuffling) {
+//            return ShuffledQuestionCategoryResponseDto::collection(collect());
+//        }
         $shuffledQuestionDto->questionsCount = $shuffledQuestionDto->questionsCount ?? $templateType->max_shuffled_question_count;
         $questions = $this->questionRepository->getShuffledQuestions($shuffledQuestionDto);
-        return QuestionResponseDto::collection($questions);
+
+        // Group questions by category and distribute evenly
+        $groupedQuestions = $questions->groupBy('question_category_id');
+        $categories = collect();
+
+        foreach ($groupedQuestions as $categoryId => $categoryQuestions) {
+            $questionsPerCategory = ceil($shuffledQuestionDto->questionsCount / $groupedQuestions->count());
+            $selectedQuestions = $categoryQuestions->take($questionsPerCategory);
+
+            $categories->push([
+                'questionCategoryId' => $categoryId,
+                'questions' => $selectedQuestions->map(function ($question) {
+                    return [
+                        'id' => $question->id,
+                        'questionLevel' => $question->question_level,
+                        'period' => $question->period,
+                        'content' => $question->content,
+                        'answers' => $question->answers->map(function ($answer) {
+                            return [
+                                'id' => $answer->id,
+                                'isCorrect' => $answer->is_correct,
+                                'name' => $answer->name,
+                            ];
+                        }),
+                    ];
+                }),
+            ]);
+        }
+
+        return ShuffledQuestionCategoryResponseDto::collection($categories);
     }
 }

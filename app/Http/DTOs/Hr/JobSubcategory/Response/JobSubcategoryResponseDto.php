@@ -12,3 +12,4 @@ class JobSubcategoryResponseDto extends Data
     ) {
     }
 }
+

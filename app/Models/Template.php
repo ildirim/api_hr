@@ -21,6 +21,7 @@ class Template extends Model
         'duration',
         'timing_code',
         'passing_type_code',
+        'passing_score',
         'name',
         'url',
         'status',

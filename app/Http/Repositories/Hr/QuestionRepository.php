@@ -14,7 +14,7 @@ class QuestionRepository implements QuestionRepositoryInterface
     {
     }
 
-    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): ?Collection
+    public function getShuffledQuestions(ShuffledQuestionDto $shuffledQuestionDto): Collection
     {
         return $this->question->with([
             'answers' => function ($query) use ($shuffledQuestionDto) {
@@ -28,15 +28,14 @@ class QuestionRepository implements QuestionRepositoryInterface
             ->join('question_translations as qt', 'qt.question_id', 'q.id')
 //            ->where('q.job_subcategory_id', $shuffledQuestionDto->jobSubcategoryId)
             ->where('qt.language_id', $shuffledQuestionDto->languageId)
-            ->whereNotExists(function ($query) use ($shuffledQuestionDto) {
-                $query->select(DB::raw(1))
-                    ->from('template_category_questions as tcq')
-                    ->where('tcq.questionable_id', '!=', 'q.id')
-//                    ->where('tcq.company_id', '!=', $shuffledQuestionDto->companyId)
-                ;
-            })
+//            ->whereNotExists(function ($query) use ($shuffledQuestionDto) {
+//                $query->select(DB::raw(1))
+//                    ->from('template_category_questions as tcq')
+//                    ->where('tcq.questionable_id', '!=', 'q.id')
+////                    ->where('tcq.company_id', '!=', $shuffledQuestionDto->companyId)
+//                ;
+//            })
             ->inRandomOrder()
-            ->limit($shuffledQuestionDto->questionsCount)
             ->get();
     }
 }

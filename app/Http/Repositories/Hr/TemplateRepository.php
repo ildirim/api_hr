@@ -62,6 +62,6 @@ class TemplateRepository implements TemplateRepositoryInterface
 
     public function update(Template $template, TemplateUpdateDto $templateUpdateDto): bool
     {
-        return $template->update($templateUpdateDto->toArray());
+        return $template->update(TemplateUpdateDto::toLower($templateUpdateDto->toArray()));
     }
 }

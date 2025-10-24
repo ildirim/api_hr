@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/{id}', 'getTemplateById');
             Route::post('/store', 'store');
             Route::patch('/store-questions/{id}', 'storeQuestions');
+            Route::patch('/store-settings/{id}', 'storeSettings');
             Route::patch('/update/{id}', 'update');
         });
 
