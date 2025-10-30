@@ -9,3 +9,4 @@ interface JobSubcategoryRepositoryInterface
     public function getJobSubcategoriesByCategoryId(int $jobCategoryId): Collection;
 }
 
+

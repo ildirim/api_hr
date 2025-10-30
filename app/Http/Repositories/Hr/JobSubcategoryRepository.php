@@ -26,3 +26,4 @@ class JobSubcategoryRepository implements JobSubcategoryRepositoryInterface
     }
 }
 
+

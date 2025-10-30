@@ -19,3 +19,4 @@ class ShuffledQuestionResponseDto extends Data
     ) {
     }
 }
+

@@ -10,3 +10,4 @@ interface JobSubcategoryServiceInterface
     public function getJobSubcategoriesByCategoryId(int $jobCategoryId): DataCollection;
 }
 
+
