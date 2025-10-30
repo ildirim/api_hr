@@ -8,6 +8,7 @@ use App\Http\DTOs\Hr\Template\Request\TemplateCategoryRequestDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateQuestionDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateSettingDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateStoreUpdateDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateByIdResponseDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateListResponseDto;
@@ -121,5 +122,17 @@ class TemplateService implements TemplateServiceInterface
             throw new BadRequestException('Stage is wrong');
         }
         $this->templateRepository->update($template, $templateUpdateDto);
+    }
+
+    public function updateStore(int $id, TemplateStoreUpdateDto $templateStoreUpdateDto): void
+    {
+        $template = $this->templateRepository->getTemplateById($id);
+        if (!$template) {
+            throw new NotFoundException();
+        }
+        if ($template->status > TemplateStatusEnum::INCOMPLETED_STEP1->value) {
+            throw new BadRequestException('Stage is wrong');
+        }
+        $this->templateRepository->updateStore($template, $templateStoreUpdateDto);
     }
 }

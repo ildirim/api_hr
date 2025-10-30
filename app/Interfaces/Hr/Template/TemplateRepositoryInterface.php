@@ -3,6 +3,7 @@
 namespace App\Interfaces\Hr\Template;
 
 use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateStoreUpdateDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Models\Template;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,4 +17,6 @@ interface TemplateRepositoryInterface
     public function store(TemplateStoreDto $templateStoreDto): Template;
 
     public function update(Template $template, TemplateUpdateDto $templateUpdateDto): bool;
+
+    public function updateStore(Template $template, TemplateStoreUpdateDto $templateStoreUpdateDto): bool;
 }

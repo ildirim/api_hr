@@ -3,6 +3,7 @@
 namespace App\Http\Repositories\Hr;
 
 use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
+use App\Http\DTOs\Hr\Template\Request\TemplateStoreUpdateDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Models\Template;
@@ -63,5 +64,10 @@ class TemplateRepository implements TemplateRepositoryInterface
     public function update(Template $template, TemplateUpdateDto $templateUpdateDto): bool
     {
         return $template->update(TemplateUpdateDto::toLower($templateUpdateDto->toArray()));
+    }
+
+    public function updateStore(Template $template, TemplateStoreUpdateDto $templateStoreUpdateDto): bool
+    {
+        return $template->update(TemplateStoreUpdateDto::toLower($templateStoreUpdateDto->toArray()));
     }
 }
