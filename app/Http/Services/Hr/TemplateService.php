@@ -48,6 +48,9 @@ class TemplateService implements TemplateServiceInterface
 
     public function store(TemplateStoreDto $templateStoreDto): TemplateByIdResponseDto
     {
+        if (!$templateStoreDto->companyId) {
+            throw new NotFoundException('Company not found');
+        }
         return TemplateByIdResponseDto::from($this->templateRepository->store($templateStoreDto));
     }
 
@@ -61,6 +64,39 @@ class TemplateService implements TemplateServiceInterface
             if ($template->status > TemplateStatusEnum::INCOMPLETED_STEP1->value) {
                 throw new BadRequestException('Stage is wrong');
             }
+            foreach ($templateQuestionDto->templateCategories as $templateCategoryDto) {
+                $templateCategory = $this->storeTemplateCategory($id, $templateCategoryDto);
+
+                $questions = collect($templateCategoryDto->questions);
+                $this->storeTemplateCategoryQuestions($questions, $templateCategory);
+            }
+
+            $templateUpdateDto = TemplateUpdateDto::from([
+                'status' => $templateQuestionDto->status,
+            ]);
+            $this->templateRepository->update($template, $templateUpdateDto);
+        });
+    }
+
+    public function updateQuestions(int $id, TemplateQuestionDto $templateQuestionDto): void
+    {
+        DB::transaction(function () use ($id, $templateQuestionDto) {
+            $template = $this->templateRepository->getTemplateById($id);
+            if (!$template) {
+                throw new NotFoundException();
+            }
+            if ($template->status > TemplateStatusEnum::INCOMPLETED_STEP2->value) {
+                throw new BadRequestException('Stage is wrong');
+            }
+
+            // delete existing template categories and their questions
+            $template->templateCategories->each(function ($templateCategory) {
+                $templateCategory->questions()->detach();
+                $templateCategory->customQuestions()->detach();
+                $templateCategory->delete();
+            });
+
+            // recreate from request
             foreach ($templateQuestionDto->templateCategories as $templateCategoryDto) {
                 $templateCategory = $this->storeTemplateCategory($id, $templateCategoryDto);
 

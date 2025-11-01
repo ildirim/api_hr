@@ -22,8 +22,22 @@ class ConfirmPasswordRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|email|min:3|max:100|unique:admins,email',
-            'phone' => 'required|string|size:13|unique:admins,phone',
+            'email' => [
+                'nullable',
+                'string',
+                'email',
+                'min:3',
+                'max:100',
+                'unique:admins,email',
+                'required_without:phone',
+            ],
+            'phone' => [
+                'nullable',
+                'string',
+                'size:13',
+                'unique:admins,phone',
+                'required_without:email',
+            ],
             'password' => 'required|string|min:3|max:100',
             'confirmPassword' => 'required|string|min:3|max:100|same:password',
         ];

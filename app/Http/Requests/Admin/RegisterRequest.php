@@ -25,8 +25,22 @@ class RegisterRequest extends BaseRequest
 //            'roleId' => 'integer|digits_between:1,11|exists:roles,id',
             'firstName' => 'required|string|min:3|max:100',
             'lastName' => 'required|string|min:3|max:100',
-            'email' => 'required|string|email|min:3|max:100|unique:admins,email',
-            'phone' => 'required|string|size:13|unique:admins,phone',
+            'email' => [
+                'nullable',
+                'string',
+                'email',
+                'min:3',
+                'max:100',
+                'unique:admins,email',
+                'required_without:phone',
+            ],
+            'phone' => [
+                'nullable',
+                'string',
+                'size:13',
+                'unique:admins,phone',
+                'required_without:email',
+            ],
         ];
     }
 

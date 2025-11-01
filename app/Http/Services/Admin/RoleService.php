@@ -101,6 +101,10 @@ class RoleService implements RoleServiceInterface
 
     public function destroy(int $id): RoleResponseDto
     {
+        $role = $this->roleRepository->destroy($id);
+        if ($role->users()->count() > 0) {
+            throw new BadRequestException('Rol istifadəçiyə təyin edildiyi üçün silinə bilməz');
+        }
         return RoleResponseDto::from($this->roleRepository->destroy($id));
     }
 }

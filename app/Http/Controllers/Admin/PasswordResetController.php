@@ -49,7 +49,7 @@ class PasswordResetController extends Controller
     public function reset(PasswordResetRequest $request): JsonResponse
     {
         $passwordResetRequestDto = PasswordResetRequestDto::fromRequest($request);
-        $passwordReset = $this->passwordResetService->reset($passwordResetRequestDto);
-        return $this->success($passwordReset);
+        $this->passwordResetService->reset($passwordResetRequestDto);
+        return $this->success(null, 'Password reset successfully');
     }
 }

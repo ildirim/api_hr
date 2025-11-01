@@ -34,7 +34,8 @@ class ForgotPasswordRequestDto extends Data
             !is_null($request->input('phone'))
                 ? PasswordResetTypeEnum::PHONE->value
                 : PasswordResetTypeEnum::EMAIL->value,
-            mt_rand(100000, 999999),
+    '000000',
+//            mt_rand(100000, 999999),
             Carbon::now()->addMinutes(3)
         );
     }
