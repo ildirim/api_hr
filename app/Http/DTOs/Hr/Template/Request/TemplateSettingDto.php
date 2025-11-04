@@ -4,14 +4,14 @@ namespace App\Http\DTOs\Hr\Template\Request;
 
 use App\Http\DTOs\CoreData;
 use App\Http\Enums\PassingTypeEnum;
-use App\Http\Enums\TemplateStatusEnum;
+use App\Http\Enums\TemplateStepEnum;
 use App\Http\Enums\TimingEnum;
 use Spatie\LaravelData\Attributes\Validation\Between;
 use Spatie\LaravelData\Optional;
 
 class TemplateSettingDto extends CoreData
 {
-    public int $status = TemplateStatusEnum::INCOMPLETED_STEP3->value;
+    public int $step = TemplateStepEnum::STEP3_CONFIGURATION->value;
 
     public function __construct(
         #[Between(8000, 9000)]

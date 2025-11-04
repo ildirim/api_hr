@@ -11,7 +11,7 @@ use Spatie\LaravelData\PaginatedDataCollection;
 
 interface TemplateServiceInterface
 {
-    public function getTemplatesByCompanyId(int $companyId): ?PaginatedDataCollection;
+    public function getTemplatesByCompanyId(): ?PaginatedDataCollection;
 
     public function getTemplateById(int $id): ?TemplateByIdResponseDto;
 

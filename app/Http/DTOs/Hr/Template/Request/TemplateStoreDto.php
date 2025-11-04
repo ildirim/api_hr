@@ -3,6 +3,7 @@
 namespace App\Http\DTOs\Hr\Template\Request;
 
 use App\Http\Enums\TemplateStatusEnum;
+use App\Http\Enums\TemplateStepEnum;
 use Spatie\LaravelData\Attributes\Computed;
 use Spatie\LaravelData\Attributes\Validation\Between;
 use Spatie\LaravelData\Attributes\Validation\Exists;
@@ -18,7 +19,8 @@ class TemplateStoreDto extends CoreData
     #[Computed]
     public ?int $companyId = null;
 
-    public int $status = TemplateStatusEnum::INCOMPLETED_STEP1->value;
+    public int $step = TemplateStepEnum::STEP1_CREATION->value;
+    public int $status = TemplateStatusEnum::DRAFT->value;
 
     public function __construct(
         #[Between(1, 11)]

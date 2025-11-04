@@ -23,7 +23,7 @@ class TemplateController extends Controller
 
     public function getTemplatesByCompanyId(): JsonResponse
     {
-        $templates = $this->templateService->getTemplatesByCompanyId(auth('admin')->user()->company_id);
+        $templates = $this->templateService->getTemplatesByCompanyId();
         return $this->success($templates);
     }
 
