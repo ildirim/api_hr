@@ -57,6 +57,12 @@ class TemplateController extends Controller
         return $this->success(null, 'Settings stored successfully');
     }
 
+    public function updateSettings(int $id, TemplateSettingDto $templateSettingDto): JsonResponse
+    {
+        $this->templateService->updateSettings($id, $templateSettingDto);
+        return $this->success(null, 'Settings updated successfully');
+    }
+
     public function update(int $id, TemplateUpdateDto $templateUpdateDto): JsonResponse
     {
         $this->templateService->update($id, $templateUpdateDto);

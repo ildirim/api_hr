@@ -13,6 +13,7 @@ use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateByIdResponseDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateListResponseDto;
 use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryStoreDto;
+use App\Http\Enums\TemplateStatusEnum;
 use App\Http\Enums\TemplateStepEnum;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Template\TemplateServiceInterface;
@@ -65,7 +66,7 @@ class TemplateService implements TemplateServiceInterface
             if (!$template) {
                 throw new NotFoundException();
             }
-            if ($template->current_step > TemplateStepEnum::STEP1_CREATION->value) {
+            if ($template->current_step !== TemplateStepEnum::STEP1_CREATION->value) {
                 throw new BadRequestException('Stage is wrong');
             }
             foreach ($templateQuestionDto->templateCategories as $templateCategoryDto) {
@@ -89,7 +90,10 @@ class TemplateService implements TemplateServiceInterface
             if (!$template) {
                 throw new NotFoundException();
             }
-            if ($template->current_step > TemplateStepEnum::STEP2_QUESTIONS->value) {
+            if (in_array($template->status, [TemplateStatusEnum::COMPLETED->value, TemplateStatusEnum::ACTIVE->value])) {
+                throw new BadRequestException('Template can not be updated');
+            }
+            if ($template->current_step !== TemplateStepEnum::STEP2_QUESTIONS->value) {
                 throw new BadRequestException('Stage is wrong');
             }
 
@@ -144,7 +148,27 @@ class TemplateService implements TemplateServiceInterface
         if (!$template) {
             throw new NotFoundException();
         }
-        if ($template->current_step > TemplateStepEnum::STEP2_QUESTIONS->value) {
+        if (in_array($template->status, [TemplateStatusEnum::COMPLETED->value, TemplateStatusEnum::ACTIVE->value])) {
+            throw new BadRequestException('Template can not be updated');
+        }
+        if ($template->current_step !== TemplateStepEnum::STEP2_QUESTIONS->value) {
+            throw new BadRequestException('Stage is wrong');
+        }
+
+        $templateUpdateDto = TemplateUpdateDto::from($templateSettingDto->toArray());
+        $this->templateRepository->update($template, $templateUpdateDto);
+    }
+
+    public function updateSettings(int $id, TemplateSettingDto $templateSettingDto): void
+    {
+        $template = $this->templateRepository->getTemplateById($id);
+        if (!$template) {
+            throw new NotFoundException();
+        }
+        if (in_array($template->status, [TemplateStatusEnum::COMPLETED->value, TemplateStatusEnum::ACTIVE->value])) {
+            throw new BadRequestException('Template can not be updated');
+        }
+        if ($template->current_step !== TemplateStepEnum::STEP3_CONFIGURATION->value) {
             throw new BadRequestException('Stage is wrong');
         }
 
@@ -154,11 +178,18 @@ class TemplateService implements TemplateServiceInterface
 
     public function update(int $id, TemplateUpdateDto $templateUpdateDto): void
     {
+        if (
+            !in_array(
+                $templateUpdateDto->currentStep,
+                [TemplateStepEnum::STEP4_DRAFT->value, TemplateStepEnum::STEP5_COMPLETED->value, TemplateStepEnum::STEP6_ACTIVE->value])
+        ) {
+            throw new BadRequestException('Step is not correct');
+        }
         $template = $this->templateRepository->getTemplateById($id);
         if (!$template) {
             throw new NotFoundException();
         }
-        if ($template->current_step < TemplateStepEnum::STEP3_CONFIGURATION->value) {
+        if ($template->current_step !== TemplateStepEnum::STEP3_CONFIGURATION->value) {
             throw new BadRequestException('Stage is wrong');
         }
         $this->templateRepository->update($template, $templateUpdateDto);
@@ -170,9 +201,12 @@ class TemplateService implements TemplateServiceInterface
         if (!$template) {
             throw new NotFoundException();
         }
-        if ($template->current_step > TemplateStepEnum::STEP3_CONFIGURATION->value) {
-            throw new BadRequestException('Stage is wrong');
+        if (in_array($template->status, [TemplateStatusEnum::COMPLETED->value, TemplateStatusEnum::ACTIVE->value])) {
+            throw new BadRequestException('Template can not be updated');
         }
+//        if ($template->current_step > TemplateStepEnum::STEP3_CONFIGURATION->value) {
+//            throw new BadRequestException('Stage is wrong');
+//        }
         $this->templateRepository->updateStore($template, $templateStoreUpdateDto);
     }
 }

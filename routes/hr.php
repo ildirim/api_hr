@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::patch('/store-questions/{id}', 'storeQuestions');
             Route::patch('/update-questions/{id}', 'updateQuestions');
             Route::patch('/store-settings/{id}', 'storeSettings');
+            Route::patch('/update-settings/{id}', 'updateSettings');
             Route::patch('/update/{id}', 'update');
         });
 
