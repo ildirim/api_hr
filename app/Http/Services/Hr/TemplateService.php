@@ -65,7 +65,7 @@ class TemplateService implements TemplateServiceInterface
             if (!$template) {
                 throw new NotFoundException();
             }
-            if ($template->status > TemplateStepEnum::STEP1_CREATION->value) {
+            if ($template->current_step > TemplateStepEnum::STEP1_CREATION->value) {
                 throw new BadRequestException('Stage is wrong');
             }
             foreach ($templateQuestionDto->templateCategories as $templateCategoryDto) {
