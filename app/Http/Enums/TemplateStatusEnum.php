@@ -4,11 +4,9 @@ namespace App\Http\Enums;
 
 enum TemplateStatusEnum: int
 {
-    case INCOMPLETED_STEP1 = 7001;
-    case INCOMPLETED_STEP2 = 7002;
-    case INCOMPLETED_STEP3 = 7003;
-    case DRAFT = 7004;
-    case ACTIVE = 7005;
-    case INACTIVE = 7006;
-    case EXPIRED = 7007;
+    case DRAFT = 9001;
+    case COMPLETED = 9002;
+    case ACTIVE = 9003;
+    case INACTIVE = 9004;
+    case EXPIRED = 9005;
 }

@@ -24,7 +24,7 @@ class Template extends Model
         'passing_score',
         'name',
         'url',
-        'step',
+        'current_step',
         'status',
     ];
 

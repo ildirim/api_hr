@@ -13,7 +13,7 @@ use Spatie\LaravelData\Optional;
 
 class TemplateQuestionDto extends CoreData
 {
-    public int $step = TemplateStepEnum::STEP2_QUESTIONS->value;
+    public int $currentStep = TemplateStepEnum::STEP2_QUESTIONS->value;
 
     public function __construct(
         #[Between(8000, 9000)]

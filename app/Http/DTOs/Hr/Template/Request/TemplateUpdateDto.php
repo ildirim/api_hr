@@ -14,7 +14,7 @@ class TemplateUpdateDto extends CoreData
 {
     public function __construct(
         #[Between(7000, 8000)]
-        public int $step,
+        public int $currentStep,
         #[Between(8000, 9000)]
         public int|Optional $status,
         #[Between(8000, 9000)]
@@ -26,9 +26,9 @@ class TemplateUpdateDto extends CoreData
         #[Between(1, 10000)]
         public null|int|Optional $duration = 0,
     ) {
-        if ($this->step == TemplateStepEnum::STEP5_COMPLETED) {
+        if ($this->currentStep == TemplateStepEnum::STEP5_COMPLETED) {
             $this->status = TemplateStatusEnum::COMPLETED->value;
-        } else if ($this->step == TemplateStepEnum::STEP6_ACTIVE) {
+        } else if ($this->currentStep == TemplateStepEnum::STEP6_ACTIVE) {
             $this->status = TemplateStatusEnum::ACTIVE->value;
         }
     }

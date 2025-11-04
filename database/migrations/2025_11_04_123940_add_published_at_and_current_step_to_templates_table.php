@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('templates', function (Blueprint $table) {
-            $table->tinyInteger('current_step')
-                ->default(1)
-                ->after('url');
+            $table->integer('current_step')->after('url');
             $table->dateTime('published_at')->nullable()->after('current_step');
         });
     }

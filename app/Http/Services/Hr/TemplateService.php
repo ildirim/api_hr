@@ -13,7 +13,6 @@ use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateByIdResponseDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateListResponseDto;
 use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryStoreDto;
-use App\Http\Enums\TemplateStatusEnum;
 use App\Http\Enums\TemplateStepEnum;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Template\TemplateServiceInterface;
@@ -77,7 +76,7 @@ class TemplateService implements TemplateServiceInterface
             }
 
             $templateUpdateDto = TemplateUpdateDto::from([
-                'step' => $templateQuestionDto->step,
+                'currentStep' => $templateQuestionDto->currentStep,
             ]);
             $this->templateRepository->update($template, $templateUpdateDto);
         });
@@ -90,7 +89,7 @@ class TemplateService implements TemplateServiceInterface
             if (!$template) {
                 throw new NotFoundException();
             }
-            if ($template->step > TemplateStepEnum::STEP2_QUESTIONS->value) {
+            if ($template->current_step > TemplateStepEnum::STEP2_QUESTIONS->value) {
                 throw new BadRequestException('Stage is wrong');
             }
 
@@ -110,7 +109,7 @@ class TemplateService implements TemplateServiceInterface
             }
 
             $templateUpdateDto = TemplateUpdateDto::from([
-                'step' => $templateQuestionDto->step,
+                'currentStep' => $templateQuestionDto->currentStep,
             ]);
             $this->templateRepository->update($template, $templateUpdateDto);
         });
@@ -145,7 +144,7 @@ class TemplateService implements TemplateServiceInterface
         if (!$template) {
             throw new NotFoundException();
         }
-        if ($template->status > TemplateStepEnum::STEP2_QUESTIONS->value) {
+        if ($template->current_step > TemplateStepEnum::STEP2_QUESTIONS->value) {
             throw new BadRequestException('Stage is wrong');
         }
 
@@ -159,7 +158,7 @@ class TemplateService implements TemplateServiceInterface
         if (!$template) {
             throw new NotFoundException();
         }
-        if ($template->status < TemplateStepEnum::STEP3_CONFIGURATION->value) {
+        if ($template->current_step < TemplateStepEnum::STEP3_CONFIGURATION->value) {
             throw new BadRequestException('Stage is wrong');
         }
         $this->templateRepository->update($template, $templateUpdateDto);
@@ -171,7 +170,7 @@ class TemplateService implements TemplateServiceInterface
         if (!$template) {
             throw new NotFoundException();
         }
-        if ($template->status > TemplateStepEnum::STEP3_CONFIGURATION->value) {
+        if ($template->current_step > TemplateStepEnum::STEP3_CONFIGURATION->value) {
             throw new BadRequestException('Stage is wrong');
         }
         $this->templateRepository->updateStore($template, $templateStoreUpdateDto);

@@ -19,7 +19,7 @@ class TemplateStoreDto extends CoreData
     #[Computed]
     public ?int $companyId = null;
 
-    public int $step = TemplateStepEnum::STEP1_CREATION->value;
+    public int $currentStep = TemplateStepEnum::STEP1_CREATION->value;
     public int $status = TemplateStatusEnum::DRAFT->value;
 
     public function __construct(
