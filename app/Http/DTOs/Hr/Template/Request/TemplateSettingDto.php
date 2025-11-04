@@ -11,7 +11,7 @@ use Spatie\LaravelData\Optional;
 
 class TemplateSettingDto extends CoreData
 {
-    public int $step = TemplateStepEnum::STEP3_CONFIGURATION->value;
+    public int $currentStep = TemplateStepEnum::STEP3_CONFIGURATION->value;
 
     public function __construct(
         #[Between(8000, 9000)]
