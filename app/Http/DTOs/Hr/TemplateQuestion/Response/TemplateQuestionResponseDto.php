@@ -17,7 +17,7 @@ class TemplateQuestionResponseDto extends Data
         public string $period,
         public ?string $question_category_name,
         public ?string $job_subcategory_name,
-        public string $content,
+        public ?string $content,
         #[DataCollectionOf(AnswerResponseDto::class)]
         public ?DataCollection $answers,
     ) {
