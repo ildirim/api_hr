@@ -15,7 +15,7 @@ class TemplateUpdateDto extends CoreData
     public function __construct(
         #[Between(7000, 8000)]
         public int $currentStep,
-        #[Between(8000, 9000)]
+        #[Between(9000, 10000)]
         public int|Optional $status,
         #[Between(8000, 9000)]
         public int|Optional $passingTypeCode = PassingTypeEnum::CORRECT_ANSWERS_COUNT->value,
