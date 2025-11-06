@@ -6,6 +6,7 @@ use App\Exceptions\NotFoundException;
 use App\Http\DTOs\Hr\CustomQuestion\Request\CustomQuestionRequestDto;
 use App\Interfaces\Hr\CustomQuestion\CustomQuestionRepositoryInterface;
 use App\Models\CustomQuestion;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class CustomQuestionRepository implements CustomQuestionRepositoryInterface
@@ -14,14 +15,15 @@ class CustomQuestionRepository implements CustomQuestionRepositoryInterface
     {
     }
 
-    public function customQuestionsByTemplateCategoryId(int $templateCategoryId): Collection
+    public function customQuestionsByTemplateId(int $templateId): ?LengthAwarePaginator
     {
         return $this->customQuestion->select('id', 'content')
             ->with(['answers' => function($query) {
-                $query->select('id', 'custom_question_id', 'is_correct', 'name');
+                $query->select('id', 'custom_question_id', 'is_correct', 'answer_text');
             }])
-            ->where('template_category_id', $templateCategoryId)
-            ->get();
+            ->where('template_id', $templateId)
+            ->orderBy('id', 'desc')
+            ->paginate();
     }
 
     public function store(CustomQuestionRequestDto $requestDto): CustomQuestion

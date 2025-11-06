@@ -23,6 +23,8 @@ class TemplateByIdResponseDto extends Data
         public ?string $job_category_name,
         public ?string $job_subcategory_name,
         public ?string $language,
+        public ?int $current_step,
+        public ?int $status,
         public  $template_categories,
     ) {
     }

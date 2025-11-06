@@ -8,6 +8,7 @@ use App\Interfaces\Hr\CustomQuestion\CustomQuestionRepositoryInterface;
 use App\Interfaces\Hr\CustomQuestion\CustomQuestionServiceInterface;
 use App\Models\CustomQuestion;
 use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\PaginatedDataCollection;
 
 class CustomQuestionService implements CustomQuestionServiceInterface
 {
@@ -15,9 +16,9 @@ class CustomQuestionService implements CustomQuestionServiceInterface
     {
     }
 
-    public function customQuestionsByTemplateCategoryId(int $templateCategoryId): DataCollection
+    public function customQuestionsByTemplateId(int $templateId): ?PaginatedDataCollection
     {
-        $customQuestions = $this->customQuestionRepository->customQuestionsByTemplateCategoryId($templateCategoryId);
+        $customQuestions = $this->customQuestionRepository->customQuestionsByTemplateId($templateId);
         return CustomQuestionResponseDto::collection($customQuestions);
     }
 

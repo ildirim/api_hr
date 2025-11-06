@@ -16,9 +16,9 @@ class CustomQuestionController extends Controller
     {
     }
 
-    public function customQuestionsByTemplateCategoryId(int $templateCategoryId): JsonResponse
+    public function customQuestionsByTemplateId(int $templateId): JsonResponse
     {
-        $customQuestions = $this->customQuestionService->customQuestionsByTemplateCategoryId($templateCategoryId);
+        $customQuestions = $this->customQuestionService->customQuestionsByTemplateId($templateId);
         return $this->success($customQuestions);
     }
 

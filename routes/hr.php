@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(CustomQuestionController::class)
         ->prefix('custom-questions')
         ->group(function () {
-            Route::get('/{templateCategoryId}/template-category', 'customQuestionsByTemplateCategoryId');
+            Route::get('/{templateId}/template', 'customQuestionsByTemplateId');
             Route::get('/{id}', 'customQuestionById');
         });
 

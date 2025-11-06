@@ -14,7 +14,7 @@ class CustomAnswerResponseDto extends Data
     public function __construct(
         public int $id,
         public int $is_correct,
-        public string $name,
+        public string $answer_text,
     ) {
     }
 }
