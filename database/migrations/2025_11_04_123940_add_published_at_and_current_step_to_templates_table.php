@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('templates', function (Blueprint $table) {
             $table->integer('current_step')->after('url');
             $table->dateTime('published_at')->nullable()->after('current_step');
+            $table->softDeletes();
         });
     }
 

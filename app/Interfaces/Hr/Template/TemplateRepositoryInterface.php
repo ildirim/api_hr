@@ -19,4 +19,6 @@ interface TemplateRepositoryInterface
     public function update(Template $template, TemplateUpdateDto $templateUpdateDto): bool;
 
     public function updateStore(Template $template, TemplateStoreUpdateDto $templateStoreUpdateDto): bool;
+
+    public function destroy(Template $template): bool;
 }

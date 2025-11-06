@@ -25,4 +25,6 @@ interface TemplateServiceInterface
     public function updateQuestions(int $id, TemplateQuestionDto $templateQuestionDto): void;
 
     public function storeSettings(int $id, TemplateSettingDto $templateSettingDto): void;
+
+    public function destroy(int $id): void;
 }

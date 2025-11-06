@@ -28,3 +28,4 @@ class TemplateStoreUpdateDto extends CoreData
     ) {
     }
 }
+

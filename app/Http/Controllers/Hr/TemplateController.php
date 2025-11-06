@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\DTOs\Hr\Template\Request\TemplateQuestionDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateSettingDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateStoreDto;
-use App\Http\DTOs\Hr\Template\Request\TemplateStoreUpdateDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Interfaces\Hr\Template\TemplateServiceInterface;
 use App\Traits\BaseResponse;
@@ -69,9 +68,9 @@ class TemplateController extends Controller
         return $this->success(null, 'Template updated successfully');
     }
 
-    public function updateStore(int $id, TemplateStoreUpdateDto $templateStoreUpdateDto): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        $this->templateService->updateStore($id, $templateStoreUpdateDto);
-        return $this->success(null, 'Template store data updated successfully');
+        $this->templateService->destroy($id);
+        return $this->success(null, 'Template deleted successfully', 'success', Response::HTTP_NO_CONTENT);
     }
 }

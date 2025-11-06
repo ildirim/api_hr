@@ -2,8 +2,11 @@
 
 namespace App\Http\DTOs\Hr\Template\Response;
 
+use App\Http\DTOs\Hr\TemplateCategory\Response\TemplateCategoryByIdResponseDto;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Mappers\CamelCaseMapper;
 
 #[MapName(CamelCaseMapper::class)]
@@ -20,6 +23,7 @@ class TemplateByIdResponseDto extends Data
         public ?string $job_category_name,
         public ?string $job_subcategory_name,
         public ?string $language,
+        public  $template_categories,
     ) {
     }
 }

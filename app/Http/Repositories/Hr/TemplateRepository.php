@@ -8,6 +8,8 @@ use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Models\Template;
 use App\Models\TemplateType;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TemplateRepository implements TemplateRepositoryInterface
@@ -36,18 +38,18 @@ class TemplateRepository implements TemplateRepositoryInterface
         return $this->template->find($id);
     }
 
-    public function getTemplateDetailsById(int $id): ?Template
+    public function getTemplateDetailsById(int $id): Builder|Model|null
     {
-        return $this->template->select('t.id', 't.company_id', 't.job_subcategory_id', 't.language_id', 'jc.id as job_category_id', 't.name', 'jct.name as job_category_name', 'jsct.name as job_subcategory_name', 'l.name as language')
-            ->from('templates as t')
-            ->leftJoin('job_subcategories as jsc', 'jsc.id', 't.job_subcategory_id')
+        return $this->template->select('templates.*', 'jc.id as job_category_id', 'templates.name', 'jct.name as job_category_name', 'jsct.name as job_subcategory_name', 'l.name as language')
+            ->with(['templateCategories.questions', 'templateCategories.customQuestions', 'templateType'])
+            ->leftJoin('job_subcategories as jsc', 'jsc.id', 'templates.job_subcategory_id')
             ->leftJoin('job_subcategory_translations as jsct', 'jsct.job_subcategory_id', 'jsc.id')
             ->leftJoin('job_categories as jc', 'jc.id', 'jsc.job_category_id')
             ->leftJoin('job_category_translations as jct', 'jct.job_category_id', 'jc.id')
-            ->leftJoin('languages as l', 'l.id', 't.language_id')
-            ->where('t.id', $id)
-            ->whereColumn('jsct.language_id', 't.language_id')
-            ->whereColumn('jct.language_id', 't.language_id')
+            ->leftJoin('languages as l', 'l.id', 'templates.language_id')
+            ->where('templates.id', $id)
+            ->whereColumn('jsct.language_id', 'templates.language_id')
+            ->whereColumn('jct.language_id', 'templates.language_id')
             ->first();
     }
 
@@ -69,5 +71,10 @@ class TemplateRepository implements TemplateRepositoryInterface
     public function updateStore(Template $template, TemplateStoreUpdateDto $templateStoreUpdateDto): bool
     {
         return $template->update(TemplateStoreUpdateDto::toLower($templateStoreUpdateDto->toArray()));
+    }
+
+    public function destroy(Template $template): bool
+    {
+        return $template->delete();
     }
 }
