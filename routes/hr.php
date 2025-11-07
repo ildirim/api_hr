@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::patch('/store-settings/{id}', 'storeSettings');
             Route::patch('/update-settings/{id}', 'updateSettings');
             Route::patch('/update/{id}', 'update');
+            Route::delete('/delete/{id}', 'destroy');
         });
 
     // template category
