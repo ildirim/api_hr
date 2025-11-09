@@ -27,7 +27,10 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = isset($request->email)
+            ? $request->only('email', 'password')
+            : $request->only('phone', 'password');
+
         $token = auth('admin')->attempt($credentials);
         if (!$token) {
             return $this->error(null, __('email_and_password_are_wrong'));
