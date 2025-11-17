@@ -29,6 +29,8 @@ Route::controller(AuthController::class)
         Route::post('confirm-password', 'confirmPassword');
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
+        Route::post('refresh-token', 'refreshToken');
+        Route::post('logout-with-token', 'logoutWithRefreshToken');
 });
 
 Route::controller(PasswordResetController::class)
@@ -43,6 +45,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(AuthController::class)
         ->group(function () {
             Route::get('profile', 'profile')->middleware(['auth:admin']);
+            Route::post('logout-all-devices', 'logoutAllDevices');
         });
 
     //    admins

@@ -3,6 +3,7 @@
 namespace App\Http\Repositories\Admin;
 
 use App\Exceptions\NotFoundException;
+use App\Helpers\CommonHelper;
 use App\Http\DTOs\Admin\Question\Request\QuestionRequestDto;
 use App\Http\DTOs\Admin\Question\Request\QuestionSelectRequestDto;
 use App\Interfaces\Admin\Question\QuestionRepositoryInterface;
@@ -19,7 +20,7 @@ class QuestionRepository implements QuestionRepositoryInterface
     public function questions(QuestionSelectRequestDto $questionSelectRequestDto): Collection
     {
 
-        $lang = request()->header('Accept-Language') ?? 1;
+        $lang = CommonHelper::getLanguage();
         return $this->question->with([
             'translations' => function ($query) {
                 $query->select('id', 'question_id', 'language_id', 'content');

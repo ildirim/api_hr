@@ -12,16 +12,16 @@ use App\Http\DTOs\Hr\Template\Request\TemplateStoreUpdateDto;
 use App\Http\DTOs\Hr\Template\Request\TemplateUpdateDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateByIdResponseDto;
 use App\Http\DTOs\Hr\Template\Response\TemplateListResponseDto;
-use App\Http\DTOs\Hr\TemplateCategory\Response\TemplateCategoryByIdResponseDto;
-use App\Http\DTOs\Hr\TemplateQuestion\Response\TemplateQuestionResponseDto;
-use App\Http\DTOs\Hr\Answer\Response\AnswerResponseDto;
 use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryStoreDto;
 use App\Http\Enums\TemplateStatusEnum;
 use App\Http\Enums\TemplateStepEnum;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Template\TemplateServiceInterface;
 use App\Interfaces\Hr\TemplateCategory\TemplateCategoryRepositoryInterface;
+use App\Models\Admin;
 use App\Models\TemplateCategory;
+use App\Notifications\TemplateStatusUpdatedDB;
+use App\Notifications\TemplateStatusUpdatedEmail;
 use Illuminate\Support\Facades\DB;
 use Spatie\LaravelData\PaginatedDataCollection;
 
@@ -52,162 +52,18 @@ class TemplateService implements TemplateServiceInterface
         if (!$template) {
             return null;
         }
+        return TemplateByIdResponseDto::from($template);
+    }
 
-        $languageId = $template->language_id;
-        $templateCategoryCollection = collect($template->templateCategories)
-            ->sortBy('order_number')
-            ->values();
-        $templateCategoryIds = $templateCategoryCollection->pluck('id')->all();
+    private function sendEmailNotification(Admin $admin, string $templateName, string $stepName): void
+    {
+        $message = __("Your template :templateName has been updated. The template is now :stepName.", ['templateName' => $templateName, 'stepName' => $stepName]);
+        $admin->notify(new TemplateStatusUpdatedEmail($message));
+    }
 
-        // Batch: question category names
-        $questionCategoryIdSet = $templateCategoryCollection->pluck('question_category_id')->filter()->unique()->all();
-        $questionCategoryNames = empty($questionCategoryIdSet)
-            ? collect()
-            : \DB::table('question_category_translations as qct')
-                ->whereIn('qct.question_category_id', $questionCategoryIdSet)
-                ->where('qct.language_id', $languageId)
-                ->pluck('qct.name', 'qct.question_category_id');
-
-        // All template-category-question rows
-        $tcqRows = \DB::table('template_category_questions as tcq')
-            ->whereIn('tcq.template_category_id', $templateCategoryIds)
-            ->select('tcq.template_category_id', 'tcq.questionable_id', 'tcq.questionable_type', 'tcq.order_number', 'tcq.duration')
-            ->orderBy('tcq.order_number')
-            ->get();
-
-        // Split by type
-        $questionTcq = $tcqRows->where('questionable_type', 'App\\Models\\Question');
-        $customQuestionTcq = $tcqRows->where('questionable_type', 'App\\Models\\CustomQuestion');
-
-        // Regular questions data
-        $questionIds = $questionTcq->pluck('questionable_id')->unique()->all();
-        $questionsData = empty($questionIds)
-            ? collect()
-            : \DB::table('questions as q')
-                ->join('question_translations as qt', 'qt.question_id', '=', 'q.id')
-                ->whereIn('q.id', $questionIds)
-                ->where('qt.language_id', $languageId)
-                ->select('q.id', 'qt.content')
-                ->get()
-                ->keyBy('id');
-
-        $answersByQuestion = empty($questionIds)
-            ? collect()
-            : \DB::table('answers as a')
-                ->leftJoin('answer_translations as at', 'at.answer_id', '=', 'a.id')
-                ->whereIn('a.question_id', $questionIds)
-                ->where('at.language_id', $languageId)
-                ->select('a.id', 'a.question_id', 'a.is_correct', 'at.name')
-                ->get()
-                ->groupBy('question_id')
-                ->map(function ($rows) {
-                    return collect($rows)->map(function ($a) {
-                        return AnswerResponseDto::from([
-                            'id' => $a->id,
-                            'is_correct' => (int) $a->is_correct,
-                            'name' => $a->name,
-                        ]);
-                    });
-                });
-
-        // Custom questions data
-        $customQuestionIds = $customQuestionTcq->pluck('questionable_id')->unique()->all();
-        $customQuestionsData = empty($customQuestionIds)
-            ? collect()
-            : \DB::table('custom_questions as cq')
-                ->whereIn('cq.id', $customQuestionIds)
-                ->select('cq.id', 'cq.content')
-                ->get()
-                ->keyBy('id');
-
-        $customAnswersByQuestion = empty($customQuestionIds)
-            ? collect()
-            : \DB::table('custom_answers as ca')
-                ->whereIn('ca.custom_question_id', $customQuestionIds)
-                ->select('ca.id', 'ca.custom_question_id', 'ca.is_correct', 'ca.answer_text')
-                ->get()
-                ->groupBy('custom_question_id')
-                ->map(function ($rows) {
-                    return collect($rows)->map(function ($a) {
-                        return AnswerResponseDto::from([
-                            'id' => $a->id,
-                            'is_correct' => (int) $a->is_correct,
-                            'name' => $a->answer_text,
-                        ]);
-                    });
-                });
-
-        $formatSeconds = function ($seconds) {
-            $seconds = (int) ($seconds ?? 0);
-            $h = floor($seconds / 3600);
-            $m = floor(($seconds % 3600) / 60);
-            $s = $seconds % 60;
-            return sprintf('%02d:%02d:%02d', $h, $m, $s);
-        };
-
-        $questionsByTc = $tcqRows->groupBy('template_category_id')->map(function ($rows) use (
-            $questionsData,
-            $answersByQuestion,
-            $customQuestionsData,
-            $customAnswersByQuestion,
-            $formatSeconds,
-            $template
-        ) {
-            return collect($rows)->map(function ($row) use (
-                $questionsData,
-                $answersByQuestion,
-                $customQuestionsData,
-                $customAnswersByQuestion,
-                $formatSeconds,
-                $template
-            ) {
-                if ($row->questionable_type === 'App\\Models\\Question') {
-                    $q = $questionsData->get($row->questionable_id);
-                    $answers = $answersByQuestion->get($row->questionable_id, collect());
-                    return TemplateQuestionResponseDto::from([
-                        'id' => $row->questionable_id,
-                        'period' => $formatSeconds($row->duration),
-                        'question_category_name' => null,
-                        'job_subcategory_name' => $template->job_subcategory_name ?? null,
-                        'content' => $q->content ?? null,
-                        'answers' => $answers,
-                    ]);
-                }
-                $cq = $customQuestionsData->get($row->questionable_id);
-                $answers = $customAnswersByQuestion->get($row->questionable_id, collect());
-                return TemplateQuestionResponseDto::from([
-                    'id' => $row->questionable_id,
-                    'period' => $formatSeconds($row->duration),
-                    'question_category_name' => null,
-                    'job_subcategory_name' => $template->job_subcategory_name ?? null,
-                    'content' => $cq->content ?? null,
-                    'answers' => $answers,
-                ]);
-            });
-        });
-
-        $templateCategories = $templateCategoryCollection->map(function ($tc) use ($questionCategoryNames, $questionsByTc) {
-            return TemplateCategoryByIdResponseDto::from([
-                'question_category_id' => $tc->question_category_id,
-                'question_category_name' => $tc->question_category_id ? ($questionCategoryNames[$tc->question_category_id] ?? null) : null,
-                'duration' => $tc->duration,
-                'order_number' => $tc->order_number,
-                'questions' => $questionsByTc->get($tc->id, collect()),
-            ]);
-        });
-        return TemplateByIdResponseDto::from([
-            'id' => $template->id,
-            'company_id' => $template->company_id,
-            'job_subcategory_id' => $template->job_subcategory_id,
-            'language_id' => $template->language_id,
-            'job_category_id' => $template->job_category_id,
-            'name' => $template->name,
-            'plan_code' => $template->plan_code ?? null,
-            'job_category_name' => $template->job_category_name ?? null,
-            'job_subcategory_name' => $template->job_subcategory_name ?? null,
-            'language' => $template->language ?? null,
-            'template_categories' => collect($templateCategories),
-        ]);
+    private function storeNotification(Admin $admin, string $templateName, string $stepName): void
+    {
+        $admin->notifyNow(new TemplateStatusUpdatedDB($templateName, $stepName));
     }
 
     public function store(TemplateStoreDto $templateStoreDto): TemplateByIdResponseDto
@@ -215,7 +71,14 @@ class TemplateService implements TemplateServiceInterface
         if (!$templateStoreDto->companyId) {
             throw new NotFoundException('Company not found');
         }
-        return TemplateByIdResponseDto::from($this->templateRepository->store($templateStoreDto));
+        $template = $this->templateRepository->store($templateStoreDto);
+        $template->load('admin');
+
+//        #ToDO supervisor elave edilecek. notifyNow -> notify olacaq ve supervisor elave edilecek
+        $this->storeNotification($template->admin, $template->name, TemplateStepEnum::STEP1_CREATION->name);
+//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP1_CREATION->name);
+
+        return TemplateByIdResponseDto::from($template);
     }
 
     public function storeQuestions(int $id, TemplateQuestionDto $templateQuestionDto): void
@@ -239,6 +102,9 @@ class TemplateService implements TemplateServiceInterface
                 'currentStep' => $templateQuestionDto->currentStep,
             ]);
             $this->templateRepository->update($template, $templateUpdateDto);
+
+            $this->storeNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
+//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
         });
     }
 
@@ -332,6 +198,9 @@ class TemplateService implements TemplateServiceInterface
 
         $templateUpdateDto = TemplateUpdateDto::from($templateSettingDto->toArray());
         $this->templateRepository->update($template, $templateUpdateDto);
+
+        $this->storeNotification($template->admin, $template->name, TemplateStepEnum::STEP3_CONFIGURATION->name);
+//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
     }
 
     public function updateSettings(int $id, TemplateSettingDto $templateSettingDto): void
@@ -368,6 +237,9 @@ class TemplateService implements TemplateServiceInterface
             throw new BadRequestException('Stage is wrong');
         }
         $this->templateRepository->update($template, $templateUpdateDto);
+
+        $this->storeNotification($template->admin, $template->name, $templateUpdateDto->status);
+//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
     }
 
     public function updateStore(int $id, TemplateStoreUpdateDto $templateStoreUpdateDto): void

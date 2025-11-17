@@ -8,6 +8,10 @@ enum LanguageEnum: int
     case AZERBAIJAN = 2;
     case RUSSIAN = 3;
 
+    public static function getLabels(): array {
+        return ['az', 'en', 'ru'];
+    }
+
     public static function getLabelById(?int $id): ?string {
         return match ($id) {
             LanguageEnum::ENGLISH->value => 'en',

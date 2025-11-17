@@ -8,6 +8,7 @@ use App\Http\Controllers\Hr\CustomQuestionAnswerController;
 use App\Http\Controllers\Hr\CustomQuestionController;
 use App\Http\Controllers\Hr\TemplateController;
 use App\Http\Controllers\Hr\TemplateCategoryController;
+use App\Http\Controllers\Hr\NotificationController;
 
 Route::group(['middleware' => ['auth:admin']], function () {
     // job-categories
@@ -62,5 +63,12 @@ Route::group(['middleware' => ['auth:admin']], function () {
         ->prefix('template-category')
         ->group(function () {
             Route::post('/store', 'store');
+        });
+
+    // notifications
+    Route::controller(NotificationController::class)
+        ->prefix('notifications')
+        ->group(function () {
+            Route::get('', 'getNotifications');
         });
 });

@@ -38,4 +38,9 @@ class Template extends Model
     {
         return $this->belongsTo(TemplateType::class);
     }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class);
+    }
 }

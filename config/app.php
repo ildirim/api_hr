@@ -192,6 +192,8 @@ return [
         App\Providers\CustomQuestionServiceProvider::class,
         App\Providers\CustomAnswerServiceProvider::class,
         App\Providers\CustomQuestionAnswerServiceProvider::class,
+        App\Providers\NotificationServiceProvider::class,
+        App\Providers\RefreshTokenServiceProvider::class,
     ])->toArray(),
 
     /*

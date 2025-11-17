@@ -7,8 +7,10 @@ use App\Http\Enums\AdminStatusEnum;
 use App\Http\Requests\Admin\ConfirmPasswordRequest;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\PasswordRequest;
+use App\Http\Requests\Admin\RefreshTokenRequest;
 use App\Http\Requests\Admin\RegisterRequest;
 use App\Http\Services\Admin\AuthService;
+use App\Interfaces\Common\RefreshToken\RefreshTokenServiceInterface;
 use App\Models\Admin;
 use App\Traits\BaseResponse;
 use Illuminate\Http\JsonResponse;
@@ -20,9 +22,11 @@ class AuthController extends Controller
 {
     use BaseResponse;
 
-    public function __construct(private readonly AuthService $authService)
-    {
-        $this->middleware('auth:admin', ['except' => ['login', 'loginWithGoogle', 'redirectToGoogle', 'register', 'confirmPassword']]);
+    public function __construct(
+        private readonly AuthService $authService,
+        private readonly RefreshTokenServiceInterface $refreshTokenService
+    ) {
+        $this->middleware('auth:admin', ['except' => ['login', 'loginWithGoogle', 'redirectToGoogle', 'register', 'confirmPassword', 'refreshToken']]);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -39,11 +43,12 @@ class AuthController extends Controller
         if ($admin->status == AdminStatusEnum::INACTIVE->value) {
             return $this->error(null, __('account_is_not_active'));
         }
-        $token = $this->payloadToToken($admin, $credentials);
-        $response = [
-            'token' => $token
-        ];
-        return $this->success($response);
+
+        // Generate token pair with refresh token
+        $jwtClaims = $this->getAdminClaims($admin);
+        $tokenPair = $this->refreshTokenService->createTokenPair($admin, $jwtClaims);
+
+        return $this->success($tokenPair);
     }
 
     public function redirectToGoogle()
@@ -72,6 +77,23 @@ class AuthController extends Controller
         return JWTAuth::claims($payload)->attempt($credentials);
     }
 
+    protected function getAdminClaims(Admin $admin): array
+    {
+        $role = $admin->roles->first();
+        $permissions = $role?->permissions() ? $role->permissions()->pluck('name')->toArray() : [];
+
+        return [
+            'firstName' => $admin->first_name,
+            'lastName' => $admin->last_name,
+            'email' => $admin->email,
+            'phone' => $admin->phone,
+            'profileImage' => $admin->profile_image,
+            'status' => $admin->status,
+            'role' => $role?->name,
+            'permissions' => $permissions,
+        ];
+    }
+
     public function register(RegisterRequest $request): JsonResponse
     {
         $this->authService->register($request);
@@ -97,6 +119,30 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'Successfully logged out',
         ]);
+    }
+
+    public function logoutWithRefreshToken(RefreshTokenRequest $request): JsonResponse
+    {
+        $this->refreshTokenService->revokeRefreshToken($request->refresh_token);
+        auth('admin')->logout();
+
+        return $this->success(null, __('successfully_logged_out'));
+    }
+
+    public function logoutAllDevices(): JsonResponse
+    {
+        $user = auth('admin')->user();
+        $this->refreshTokenService->revokeAllUserTokens($user);
+        auth('admin')->logout();
+
+        return $this->success(null, __('logged_out_from_all_devices'));
+    }
+
+    public function refreshToken(RefreshTokenRequest $request): JsonResponse
+    {
+        $tokenPair = $this->refreshTokenService->refreshTokens($request->refresh_token);
+
+        return $this->success($tokenPair);
     }
 
     public function refresh(): JsonResponse
