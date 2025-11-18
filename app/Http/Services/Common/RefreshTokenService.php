@@ -32,7 +32,7 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         );
 
         return [
-            'access_token' => $accessToken,
+            'token' => $accessToken,
             'refresh_token' => $refreshToken->token,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60, // seconds
@@ -81,7 +81,7 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         $accessToken = JWTAuth::claims($jwtClaims)->fromUser($user);
 
         return [
-            'access_token' => $accessToken,
+            'token' => $accessToken,
             'refresh_token' => $newRefreshToken->token,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
