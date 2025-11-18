@@ -70,5 +70,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         ->prefix('notifications')
         ->group(function () {
             Route::get('', 'getNotifications');
+            Route::patch('{id}/mark-as-read', 'markAsRead');
+            Route::patch('mark-all-as-read', 'markAllAsRead');
         });
 });

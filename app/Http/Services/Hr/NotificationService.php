@@ -22,6 +22,18 @@ class NotificationService implements NotificationServiceInterface
 
         return NotificationResponseDto::collection($notifications);
     }
+
+    public function markAsRead(string $notificationId): void
+    {
+        $user = auth('admin')->user();
+        $user->unreadNotifications->where('id', $notificationId)->markAsRead();
+    }
+
+    public function markAllAsRead()
+    {
+        $user = auth('admin')->user();
+        return $user->unreadNotifications->markAsRead();
+    }
 }
 
 

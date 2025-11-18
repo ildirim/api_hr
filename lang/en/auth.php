@@ -25,5 +25,8 @@ return [
     'user_not_found' => 'User not found',
     'successfully_logged_out' => 'Successfully logged out',
     'logged_out_from_all_devices' => 'Logged out from all devices',
+    'notifications_marked_as_read' => 'All notifications marked as read',
+    'notification_marked_as_read' => 'Notification marked as read',
+    'notification_not_found' => 'Notification not found or does not belong to you',
 
 ];

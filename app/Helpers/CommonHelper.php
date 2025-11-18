@@ -10,4 +10,9 @@ class CommonHelper
     {
             return LanguageEnum::getIdByLabel(app()->getLocale());
     }
+
+    public static function getLimit(): int
+    {
+        return request()->get('limit', 10);
+    }
 }

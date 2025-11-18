@@ -20,6 +20,21 @@ class NotificationController extends Controller
         $notifications = $this->notificationService->getNotifications();
         return $this->success($notifications);
     }
+
+    public function markAllAsRead(): JsonResponse
+    {
+        $count = $this->notificationService->markAllAsRead();
+        return $this->success([
+            'marked_as_read_count' => $count
+        ], __('notifications_marked_as_read'));
+    }
+
+    public function markAsRead(string $id): JsonResponse
+    {
+        $this->notificationService->markAsRead($id);
+
+        return $this->success(null, __('notification_marked_as_read'));
+    }
 }
 
 
