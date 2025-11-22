@@ -23,11 +23,9 @@ class TemplateStoreDto extends CoreData
     public int $status = TemplateStatusEnum::DRAFT->value;
 
     public function __construct(
-        #[Between(1, 11)]
         #[Exists('job_subcategories', 'id')]
         public int $jobSubcategoryId,
 
-        #[Between(1, 11)]
         #[Exists('template_types', 'id')]
         public int $templateTypeId,
 
