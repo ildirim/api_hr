@@ -15,6 +15,7 @@ use App\Http\DTOs\Hr\Template\Response\TemplateListResponseDto;
 use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryStoreDto;
 use App\Http\Enums\TemplateStatusEnum;
 use App\Http\Enums\TemplateStepEnum;
+use App\Interfaces\Admin\Admin\AdminRepositoryInterface;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Template\TemplateServiceInterface;
 use App\Interfaces\Hr\TemplateCategory\TemplateCategoryRepositoryInterface;
@@ -31,6 +32,7 @@ class TemplateService implements TemplateServiceInterface
     public function __construct(
         protected TemplateRepositoryInterface $templateRepository,
         protected TemplateCategoryRepositoryInterface $templateCategoryRepository,
+        protected AdminRepositoryInterface $adminRepository,
     )
     {
     }
@@ -72,11 +74,12 @@ class TemplateService implements TemplateServiceInterface
             throw new NotFoundException('Company not found');
         }
         $template = $this->templateRepository->store($templateStoreDto);
-        $template->load('admin');
+        /** @var Admin $admin */
+        $admin = auth('admin')->user();
 
 //        #ToDO supervisor elave edilecek. notifyNow -> notify olacaq ve supervisor elave edilecek
-        $this->storeNotification($template->admin, $template->name, TemplateStepEnum::STEP1_CREATION->name);
-//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP1_CREATION->name);
+        $this->storeNotification($admin, $template->name, TemplateStepEnum::STEP1_CREATION->name);
+        $this->sendEmailNotification($admin, $template->name, TemplateStepEnum::STEP1_CREATION->name);
 
         return TemplateByIdResponseDto::from($template);
     }
@@ -103,8 +106,10 @@ class TemplateService implements TemplateServiceInterface
             ]);
             $this->templateRepository->update($template, $templateUpdateDto);
 
-            $this->storeNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
-//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
+            /** @var Admin $admin */
+            $admin = auth('admin')->user();
+            $this->storeNotification($admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
+//        $this->sendEmailNotification($admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
         });
     }
 
@@ -195,12 +200,15 @@ class TemplateService implements TemplateServiceInterface
         if ($template->current_step !== TemplateStepEnum::STEP2_QUESTIONS->value) {
             throw new BadRequestException('Stage is wrong');
         }
+        /** @var Admin $admin */
+        $admin = auth('admin')->user();
+
 
         $templateUpdateDto = TemplateUpdateDto::from($templateSettingDto->toArray());
         $this->templateRepository->update($template, $templateUpdateDto);
 
-        $this->storeNotification($template->admin, $template->name, TemplateStepEnum::STEP3_CONFIGURATION->name);
-//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
+        $this->storeNotification($admin, $template->name, TemplateStepEnum::STEP3_CONFIGURATION->name);
+//        $this->sendEmailNotification($admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
     }
 
     public function updateSettings(int $id, TemplateSettingDto $templateSettingDto): void
@@ -227,19 +235,21 @@ class TemplateService implements TemplateServiceInterface
                 $templateUpdateDto->currentStep,
                 [TemplateStepEnum::STEP4_DRAFT->value, TemplateStepEnum::STEP5_COMPLETED->value, TemplateStepEnum::STEP6_ACTIVE->value])
         ) {
-            throw new BadRequestException('Step is not correct');
+            throw new BadRequestException('Stage is wrong');
         }
         $template = $this->templateRepository->getTemplateById($id);
         if (!$template) {
             throw new NotFoundException();
         }
-        if ($template->current_step !== TemplateStepEnum::STEP3_CONFIGURATION->value) {
-            throw new BadRequestException('Stage is wrong');
-        }
+        $admin = auth('admin')->user();
+
         $this->templateRepository->update($template, $templateUpdateDto);
 
-        $this->storeNotification($template->admin, $template->name, $templateUpdateDto->status);
-//        $this->sendEmailNotification($template->admin, $template->name, TemplateStepEnum::STEP2_QUESTIONS->name);
+        $admins = $this->adminRepository->getAdminsByCompanyId($admin->company_id);
+        foreach ($admins as $admin) {
+            $this->storeNotification($admin, $template->name, TemplateStepEnum::getNameById($templateUpdateDto->currentStep));
+            $this->sendEmailNotification($admin, $template->name, TemplateStepEnum::getNameById($templateUpdateDto->currentStep));
+        }
     }
 
     public function updateStore(int $id, TemplateStoreUpdateDto $templateStoreUpdateDto): void

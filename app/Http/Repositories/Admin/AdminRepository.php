@@ -18,9 +18,15 @@ class AdminRepository implements AdminRepositoryInterface
     public function admins(): Collection
     {
         return $this->admin->with(['roles' => function ($query) {
-                $query->select('id', 'name');
-            }])
+            $query->select('id', 'name');
+        }])
             ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    public function getAdminsByCompanyId(int $companyId): Collection
+    {
+        return $this->admin->select('id')
             ->get();
     }
 
