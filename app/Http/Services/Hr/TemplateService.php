@@ -16,6 +16,7 @@ use App\Http\DTOs\Hr\TemplateCategory\Request\TemplateCategoryStoreDto;
 use App\Http\Enums\TemplateStatusEnum;
 use App\Http\Enums\TemplateStepEnum;
 use App\Interfaces\Admin\Admin\AdminRepositoryInterface;
+use App\Interfaces\Hr\AdminBalance\AdminBalanceRepositoryInterface;
 use App\Interfaces\Hr\Template\TemplateRepositoryInterface;
 use App\Interfaces\Hr\Template\TemplateServiceInterface;
 use App\Interfaces\Hr\TemplateCategory\TemplateCategoryRepositoryInterface;
@@ -33,6 +34,7 @@ class TemplateService implements TemplateServiceInterface
         protected TemplateRepositoryInterface $templateRepository,
         protected TemplateCategoryRepositoryInterface $templateCategoryRepository,
         protected AdminRepositoryInterface $adminRepository,
+        protected AdminBalanceRepositoryInterface $adminBalanceRepository,
     )
     {
     }
@@ -73,9 +75,25 @@ class TemplateService implements TemplateServiceInterface
         if (!$templateStoreDto->companyId) {
             throw new NotFoundException('Company not found');
         }
-        $template = $this->templateRepository->store($templateStoreDto);
+
         /** @var Admin $admin */
         $admin = auth('admin')->user();
+
+        // Check if admin has available balance for this template type
+        $availableBalance = $this->adminBalanceRepository->getAvailableBalance(
+            $admin->id,
+            $templateStoreDto->templateTypeId
+        );
+
+        if (!$availableBalance) {
+            throw new BadRequestException('Insufficient balance for this template type. Please purchase a package.');
+        }
+
+        // Create template
+        $template = $this->templateRepository->store($templateStoreDto);
+
+        // Increment used count in admin balance
+        $this->adminBalanceRepository->incrementUsedCount($availableBalance);
 
 //        #ToDO supervisor elave edilecek. notifyNow -> notify olacaq ve supervisor elave edilecek
         $this->storeNotification($admin, $template->name, TemplateStepEnum::STEP1_CREATION->name);

@@ -31,6 +31,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
+
         $credentials = isset($request->email)
             ? $request->only('email', 'password')
             : $request->only('phone', 'password');

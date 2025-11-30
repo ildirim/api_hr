@@ -9,6 +9,7 @@ use App\Http\Controllers\Hr\CustomQuestionController;
 use App\Http\Controllers\Hr\TemplateController;
 use App\Http\Controllers\Hr\TemplateCategoryController;
 use App\Http\Controllers\Hr\NotificationController;
+use App\Http\Controllers\Hr\PurchaseController;
 
 Route::group(['middleware' => ['auth:admin']], function () {
     // job-categories
@@ -72,5 +73,12 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('', 'getNotifications');
             Route::patch('{id}/mark-as-read', 'markAsRead');
             Route::patch('mark-all-as-read', 'markAllAsRead');
+        });
+
+    // purchase
+    Route::controller(PurchaseController::class)
+        ->prefix('packages')
+        ->group(function () {
+            Route::post('purchase', 'purchase');
         });
 });

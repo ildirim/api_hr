@@ -189,6 +189,8 @@ return [
         App\Providers\QuestionAnswerServiceProvider::class,
         App\Providers\TemplateServiceProvider::class,
         App\Providers\TemplateCategoryServiceProvider::class,
+        App\Providers\PackageServiceProvider::class,
+        App\Providers\HrPackageServiceProvider::class,
         App\Providers\CustomQuestionServiceProvider::class,
         App\Providers\CustomAnswerServiceProvider::class,
         App\Providers\CustomQuestionAnswerServiceProvider::class,

@@ -18,9 +18,8 @@ use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\AnswerController;
 use App\Http\Controllers\Admin\TemplateController;
 use App\Http\Controllers\Admin\TemplateTypeController;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\Admin\PackageController;
 
-Route::get('/test', [TestController::class, 'index']);
 Route::controller(AuthController::class)
     ->group(function () {
         Route::post('login', 'login');
@@ -202,6 +201,17 @@ Route::group(['middleware' => ['auth:admin']], function () {
         ->group(function () {
             Route::get('', 'templateTypes');
             Route::get('/{id}', 'templateTypeById');
+            Route::post('/store', 'store');
+            Route::put('/update/{id}', 'update');
+            Route::delete('/delete/{id}', 'destroy');
+        });
+
+    //    packages
+    Route::controller(PackageController::class)
+        ->prefix('packages')
+        ->group(function () {
+            Route::get('', 'packages');
+            Route::get('/{id}', 'packageById');
             Route::post('/store', 'store');
             Route::put('/update/{id}', 'update');
             Route::delete('/delete/{id}', 'destroy');
