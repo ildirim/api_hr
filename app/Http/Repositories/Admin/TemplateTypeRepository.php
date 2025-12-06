@@ -29,10 +29,9 @@ class TemplateTypeRepository implements TemplateTypeRepositoryInterface
         return $this->templateType->create($data);
     }
 
-    public function update(int $id, TemplateTypeRequestDto $request): TemplateType
+    public function update(TemplateType $templateType, TemplateTypeRequestDto $request): TemplateType
     {
         $data = TemplateTypeRequestDto::toLower($request->toArray());
-        $templateType = $this->templateType->findOrFail($id);
         $templateType->update($data);
         return $templateType;
     }

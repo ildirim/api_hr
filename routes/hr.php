@@ -55,7 +55,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::patch('/update-questions/{id}', 'updateQuestions');
             Route::patch('/store-settings/{id}', 'storeSettings');
             Route::patch('/update-settings/{id}', 'updateSettings');
-            Route::patch('/update/{id}', 'update');
+            Route::patch('/update/{id}', 'storeConfigs');
+            Route::patch('/store-configs/{id}', 'storeConfigs');
             Route::delete('/delete/{id}', 'destroy');
         });
 

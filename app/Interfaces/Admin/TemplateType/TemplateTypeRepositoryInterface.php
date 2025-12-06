@@ -14,7 +14,7 @@ interface TemplateTypeRepositoryInterface
 
     public function store(TemplateTypeRequestDto $request): TemplateType;
 
-    public function update(int $id, TemplateTypeRequestDto $request): TemplateType;
+    public function update(TemplateType $templateType, TemplateTypeRequestDto $request): TemplateType;
 
     public function destroy(TemplateType $templateType): bool;
 }

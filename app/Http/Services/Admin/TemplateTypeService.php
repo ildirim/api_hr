@@ -44,22 +44,19 @@ class TemplateTypeService implements TemplateTypeServiceInterface
 
     public function update(int $id, TemplateTypeRequestDto $request): void
     {
-        $templateType = $this->templateTypeRepository->update($id, $request);
+        $templateType = $this->templateTypeRepository->templateTypeById($id);
+        if (!$templateType) {
+            throw new NotFoundException('Template type not found');
+        }
+        $templateType = $this->templateTypeRepository->update($templateType, $request);
         $this->updateQuestionCategories($templateType, $request);
     }
 
     public function updateQuestionCategories(TemplateType $templateType, TemplateTypeRequestDto $request): void
     {
-        $storedQuestionCategories = [];
+        $templateType->questionCategories()->delete();
         $questionCategories = QuestionCategoryRequestDto::toLower($request->questionCategories->toArray());
-        foreach ($questionCategories as $questionCategory) {
-            if (isset($questionCategory->id)) {
-                $this->questionCategoryRepository->updateQuestionCategory($questionCategory->id, $questionCategory);
-            } else {
-                $storedQuestionCategories[] =  $questionCategory;
-            }
-        }
-        $templateType->questionCategories()->attach($storedQuestionCategories);
+        $templateType->questionCategories()->attach($questionCategories);
     }
 
     public function destroy(int $id): void

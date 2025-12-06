@@ -3,6 +3,7 @@
 namespace App\Http\DTOs\Admin\TemplateType\Request;
 
 use App\Http\DTOs\CoreData;
+use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Optional;
 
@@ -11,6 +12,7 @@ class QuestionCategoryRequestDto extends CoreData
     public function __construct(
         public ?int $id,
 
+        #[Exists('question_categories', 'id')]
         public int $questionCategoryId,
 
         #[Min(0)]

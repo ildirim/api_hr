@@ -25,6 +25,7 @@ use App\Models\TemplateCategory;
 use App\Notifications\TemplateStatusUpdatedDB;
 use App\Notifications\TemplateStatusUpdatedEmail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Spatie\LaravelData\PaginatedDataCollection;
 
 
@@ -68,6 +69,18 @@ class TemplateService implements TemplateServiceInterface
     private function storeNotification(Admin $admin, string $templateName, string $stepName): void
     {
         $admin->notifyNow(new TemplateStatusUpdatedDB($templateName, $stepName));
+    }
+
+    private function generateUniqueEmail(): string
+    {
+        do {
+            $uniqueId = time() . '-' . Str::random(8);
+            $email = strtolower($uniqueId) . env('EMAIL_DOMAIN');
+
+            $exists = $this->templateRepository->checkEmailExists($email);
+        } while ($exists);
+
+        return $email;
     }
 
     public function store(TemplateStoreDto $templateStoreDto): TemplateByIdResponseDto
@@ -141,9 +154,9 @@ class TemplateService implements TemplateServiceInterface
             if (in_array($template->status, [TemplateStatusEnum::COMPLETED->value, TemplateStatusEnum::ACTIVE->value])) {
                 throw new BadRequestException('Template can not be updated');
             }
-            if ($template->current_step !== TemplateStepEnum::STEP2_QUESTIONS->value) {
-                throw new BadRequestException('Stage is wrong');
-            }
+//            if ($template->current_step !== TemplateStepEnum::STEP2_QUESTIONS->value) {
+//                throw new BadRequestException('Stage is wrong');
+//            }
 
             // delete existing template categories and their questions
             $template->templateCategories->each(function ($templateCategory) {
@@ -238,28 +251,32 @@ class TemplateService implements TemplateServiceInterface
         if (in_array($template->status, [TemplateStatusEnum::COMPLETED->value, TemplateStatusEnum::ACTIVE->value])) {
             throw new BadRequestException('Template can not be updated');
         }
-        if ($template->current_step !== TemplateStepEnum::STEP3_CONFIGURATION->value) {
-            throw new BadRequestException('Stage is wrong');
-        }
+//        if ($template->current_step !== TemplateStepEnum::STEP3_CONFIGURATION->value) {
+//            throw new BadRequestException('Stage is wrong');
+//        }
 
         $templateUpdateDto = TemplateUpdateDto::from($templateSettingDto->toArray());
         $this->templateRepository->update($template, $templateUpdateDto);
     }
 
-    public function update(int $id, TemplateUpdateDto $templateUpdateDto): void
+    public function storeConfigs(int $id, TemplateUpdateDto $templateUpdateDto): void
     {
-        if (
-            !in_array(
-                $templateUpdateDto->currentStep,
-                [TemplateStepEnum::STEP4_DRAFT->value, TemplateStepEnum::STEP5_COMPLETED->value, TemplateStepEnum::STEP6_ACTIVE->value])
-        ) {
-            throw new BadRequestException('Stage is wrong');
-        }
         $template = $this->templateRepository->getTemplateById($id);
         if (!$template) {
             throw new NotFoundException();
         }
+        if (in_array($template->status, [TemplateStatusEnum::COMPLETED->value, TemplateStatusEnum::ACTIVE->value])) {
+            throw new BadRequestException('Template can not be updated');
+        }
+        if ($template->current_step !== TemplateStepEnum::STEP3_CONFIGURATION->value) {
+            throw new BadRequestException('Stage is wrong');
+        }
         $admin = auth('admin')->user();
+
+        // Generate unique email if status is STEP6_ACTIVE
+        if ($templateUpdateDto->currentStep === TemplateStepEnum::STEP6_ACTIVE->value) {
+            $templateUpdateDto->email = $this->generateUniqueEmail();
+        }
 
         $this->templateRepository->update($template, $templateUpdateDto);
 
@@ -270,7 +287,7 @@ class TemplateService implements TemplateServiceInterface
         }
     }
 
-    public function updateStore(int $id, TemplateStoreUpdateDto $templateStoreUpdateDto): void
+    public function updateConfigs(int $id, TemplateStoreUpdateDto $templateStoreUpdateDto): void
     {
         $template = $this->templateRepository->getTemplateById($id);
         if (!$template) {
@@ -282,7 +299,13 @@ class TemplateService implements TemplateServiceInterface
 //        if ($template->current_step > TemplateStepEnum::STEP3_CONFIGURATION->value) {
 //            throw new BadRequestException('Stage is wrong');
 //        }
+        $admin = auth('admin')->user();
         $this->templateRepository->updateStore($template, $templateStoreUpdateDto);
+        $admins = $this->adminRepository->getAdminsByCompanyId($admin->company_id);
+//        foreach ($admins as $admin) {
+//            $this->storeNotification($admin, $template->name, TemplateStepEnum::getNameById($templateStoreUpdateDto->currentStep));
+//            $this->sendEmailNotification($admin, $template->name, TemplateStepEnum::getNameById($templateStoreUpdateDto->currentStep));
+//        }
     }
 
     public function destroy(int $id): void

@@ -18,10 +18,6 @@ interface TemplateServiceInterface
 
     public function store(TemplateStoreDto $templateStoreDto): TemplateByIdResponseDto;
 
-    public function update(int $id, TemplateUpdateDto $templateUpdateDto): void;
-
-    public function updateStore(int $id, TemplateStoreUpdateDto $templateStoreUpdateDto): void;
-
     public function updateQuestions(int $id, TemplateQuestionDto $templateQuestionDto): void;
 
     public function storeSettings(int $id, TemplateSettingDto $templateSettingDto): void;

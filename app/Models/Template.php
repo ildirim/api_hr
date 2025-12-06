@@ -27,6 +27,9 @@ class Template extends Model
         'url',
         'current_step',
         'status',
+        'start_date',
+        'end_date',
+        'email',
     ];
 
     public function templateCategories(): HasMany
